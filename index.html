@@ -52,65 +52,46 @@
       transition: all 0.2s ease;
     }
     .btn-tool:hover { background: #2a2a2a; color: #fff; border-color: #444; }
+    .btn-primary { background: #1e4d30; color: #6be399; border-color: #2e7d4c; }
+    .btn-primary:hover { background: #27633e; color: #fff; }
 
-    /* NÚT THỐNG KÊ PHONG CÁCH IOS / HYPEROS */
-    .btn-stats-toggle {
-      background: linear-gradient(135deg, rgba(74, 158, 110, 0.3), rgba(52, 120, 246, 0.3));
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #ffffff;
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      transition: all 0.25s cubic-bezier(0.32, 0.72, 0, 1);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-      outline: none;
-    }
-    .btn-stats-toggle:hover {
-      background: linear-gradient(135deg, rgba(74, 158, 110, 0.45), rgba(52, 120, 246, 0.45));
-      transform: scale(1.04);
-      box-shadow: 0 4px 15px rgba(74, 158, 110, 0.35);
-    }
-    .btn-stats-toggle:active {
-      transform: scale(0.95);
-    }
-
-    /* BANG TRACKER MAIN LAYOUT */
-    .main-container {
+    /* LAYOUT CHÍNH */
+    .app-content {
       flex: 1;
       display: flex;
+      flex-direction: column;
       overflow: hidden;
       position: relative;
     }
+
     .tracker-wrapper {
       flex: 1;
       overflow: auto;
-      padding: 16px;
+      padding: 12px;
     }
-    .tracker-table {
+
+    table.tracker-table {
       width: 100%;
       border-collapse: collapse;
       white-space: nowrap;
     }
+
     .tracker-table th, .tracker-table td {
       border: 1px solid #222;
-      padding: 8px 10px;
+      padding: 6px 8px;
       text-align: center;
     }
+
     .tracker-table th {
       background: #181818;
       color: #aaa;
       position: sticky;
       top: 0;
       z-index: 10;
+      font-weight: 600;
     }
-    .tracker-table td.habit-name {
+
+    .tracker-table td.habit-col {
       text-align: left;
       font-weight: 600;
       color: #fff;
@@ -118,12 +99,49 @@
       position: sticky;
       left: 0;
       z-index: 5;
-      min-width: 150px;
+      min-width: 190px;
     }
+
+    .habit-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .habit-title {
+      cursor: pointer;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: color 0.2s;
+    }
+    .habit-title:hover { color: #4a9e6e; text-decoration: underline; }
+
+    .habit-actions {
+      display: flex;
+      gap: 4px;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+    .habit-item:hover .habit-actions { opacity: 1; }
+
+    .btn-icon {
+      background: transparent;
+      border: none;
+      color: #888;
+      cursor: pointer;
+      font-size: 11px;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+    .btn-icon:hover { color: #fff; background: rgba(255,255,255,0.1); }
+    .btn-icon.delete:hover { color: #f44336; }
+
     .cell-check {
       cursor: pointer;
-      width: 28px;
-      height: 28px;
+      width: 26px;
+      height: 26px;
       border-radius: 4px;
       background: #1a1a1a;
       transition: all 0.15s ease;
@@ -132,154 +150,129 @@
       justify-content: center;
       user-select: none;
       margin: 0 auto;
+      font-weight: bold;
     }
     .cell-check.done {
       background: #2e7d32;
       color: #fff;
-      box-shadow: 0 0 8px rgba(46, 125, 50, 0.6);
+      box-shadow: 0 0 6px rgba(46, 125, 50, 0.5);
     }
 
-    /* ==========================================
-       MODAL THỐNG KÊ FULLSCREEN (iOS / HyperOS)
-       ========================================== */
-    .stats-modal-overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(28px) saturate(190%);
-      -webkit-backdrop-filter: blur(28px) saturate(190%);
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-      transition: opacity 0.35s cubic-bezier(0.32, 0.72, 0, 1),
-                  visibility 0.35s cubic-bezier(0.32, 0.72, 0, 1);
-    }
-    .stats-modal-overlay.active {
-      opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
-    }
-    .stats-modal-content {
-      width: 92vw;
-      height: 88vh;
-      max-width: 1200px;
-      background: rgba(20, 20, 25, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 24px;
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.08) inset;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      /* Animation nảy lò xo đặc trưng */
-      transform: scale(0.86) translateY(20px);
-      opacity: 0;
-      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.15),
-                  opacity 0.3s ease;
+    /* PHẦN THỐNG KÊ VÀ TIẾN TRÌNH CŨ (CÓ ANIMATION IOS/HYPEROS) */
+    .stats-section {
+      background: rgba(20, 20, 24, 0.94);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 12px 16px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      max-height: 250px;
       overflow-y: auto;
+      
+      /* Hiệu ứng thu phóng mượt chuẩn iOS / HyperOS */
+      transition: transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.2),
+                  opacity 0.35s ease,
+                  max-height 0.4s ease,
+                  padding 0.35s ease;
+      transform-origin: bottom right;
+      will-change: transform, opacity;
     }
-    .stats-modal-overlay.active .stats-modal-content {
-      transform: scale(1) translateY(0);
-      opacity: 1;
-    }
-    .stats-modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    .stats-modal-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .stats-modal-close {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.12);
-      border: none;
-      color: #fff;
-      font-size: 16px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
-    }
-    .stats-modal-close:hover {
-      background: rgba(255, 255, 255, 0.25);
-      transform: scale(1.1);
+
+    .stats-section.is-hidden {
+      opacity: 0 !important;
+      max-height: 0 !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+      transform: scale(0.92) translateY(20px) !important;
+      pointer-events: none !important;
+      overflow: hidden !important;
     }
 
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: 1fr 1fr;
       gap: 16px;
-      flex: 1;
+      height: 100%;
     }
+
     .stat-card {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 16px;
-      padding: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 12px;
+      padding: 10px 14px;
       display: flex;
       flex-direction: column;
     }
+
     .stat-card h4 {
-      color: #aaa;
-      margin-bottom: 12px;
-      font-size: 13px;
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 8px;
     }
+
     .chart-box {
       position: relative;
-      flex: 1;
-      min-height: 220px;
+      height: 150px;
+      width: 100%;
     }
 
-    /* ==========================================
-       TỐI ƯU XOAY NGANG DÀNH CHO MOBILE
-       ========================================== */
-    .portrait-notice {
-      display: none;
+    /* NÚT KÝ TỰ NHỎ Ở GÓC DƯỚI BÊN PHẢI */
+    .floating-toggle-btn {
       position: fixed;
-      inset: 0;
-      background: #09090b;
-      z-index: 99999;
-      flex-direction: column;
+      bottom: 18px;
+      right: 18px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: #ffffff;
+      font-size: 18px;
+      cursor: pointer;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      display: flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      padding: 24px;
-      color: #ffffff;
-    }
-    .portrait-notice-icon {
-      font-size: 52px;
-      margin-bottom: 16px;
-      animation: rotatePhone 2.5s infinite cubic-bezier(0.65, 0, 0.35, 1);
-    }
-    @keyframes rotatePhone {
-      0%, 100% { transform: rotate(0deg); }
-      50% { transform: rotate(-90deg); }
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      outline: none;
     }
 
+    .floating-toggle-btn:hover {
+      transform: scale(1.12);
+      background: rgba(255, 255, 255, 0.22);
+      box-shadow: 0 10px 28px rgba(74, 158, 110, 0.35);
+    }
+
+    .floating-toggle-btn:active {
+      transform: scale(0.92);
+    }
+
+    /* TỐI ƯU GIAO DIỆN MÀN HÌNH NGANG DÀNH CHO MOBILE */
     @media screen and (max-width: 768px) and (orientation: portrait) {
-      .portrait-notice {
-        display: flex !important;
+      body::before {
+        content: "📱 Vui lòng xoay ngang điện thoại để theo dõi đầy đủ ngày";
+        position: fixed;
+        top: 6px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(74, 158, 110, 0.95);
+        color: #fff;
+        padding: 4px 14px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        z-index: 999999;
+        backdrop-filter: blur(8px);
+        pointer-events: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        white-space: nowrap;
       }
     }
-    @media screen and (max-height: 500px) and (orientation: landscape) {
-      .header { padding: 4px 12px; }
-      .stats-modal-content { height: 94vh; padding: 14px; }
+
+    @media (max-width: 600px) {
+      .stats-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -291,37 +284,26 @@
       <span>⚡</span> DISCIPLINE TRACKER <span>2026</span>
     </div>
     <div class="btn-group">
+      <button class="btn-tool btn-primary" onclick="addHabit()">+ Thêm dòng</button>
       <button class="btn-tool" onclick="resetAllData()">Xóa làm lại</button>
-      <button class="btn-stats-toggle" onclick="openStatsModal()">
-        📊 Thống kê
-      </button>
     </div>
   </header>
 
-  <!-- Tracker Main Table -->
-  <main class="main-container">
+  <!-- Layout Chính -->
+  <div class="app-content">
     <div class="tracker-wrapper">
-      <table class="tracker-table" id="trackerTable">
+      <table class="tracker-table">
         <thead>
           <tr id="tableHeader">
-            <th style="min-width: 160px; text-align: left;">Mục tiêu / Thói quen</th>
+            <th style="min-width: 190px; text-align: left;">Mục tiêu / Thói quen</th>
           </tr>
         </thead>
         <tbody id="tableBody"></tbody>
       </table>
     </div>
-  </main>
 
-  <!-- Modal Thống kê Fullscreen phong cách iOS / HyperOS -->
-  <div id="statsModal" class="stats-modal-overlay" onclick="closeStatsModalOnOuter(event)">
-    <div class="stats-modal-content">
-      <div class="stats-modal-header">
-        <div class="stats-modal-title">
-          📊 <span>Thống Kê Tổng Quan Hiệu Suất</span>
-        </div>
-        <button class="stats-modal-close" onclick="closeStatsModal()">✕</button>
-      </div>
-      
+    <!-- Khung Tiến Trình & Thống Kê Cũ -->
+    <div id="statsSection" class="stats-section">
       <div class="stats-grid">
         <div class="stat-card">
           <h4>🎯 Tỷ lệ hoàn thành theo ngày (%)</h4>
@@ -339,35 +321,40 @@
     </div>
   </div>
 
-  <!-- Màn hình Cảnh báo xoay ngang điện thoại -->
-  <div class="portrait-notice">
-    <div class="portrait-notice-icon">📱</div>
-    <h3 style="margin-bottom: 8px; font-size: 18px;">Vui lòng xoay ngang điện thoại</h3>
-    <p style="color: #a1a1aa; font-size: 13px; max-width: 290px; line-height: 1.5;">
-      Ứng dụng được tối ưu giao diện nằm ngang để theo dõi toàn bộ chuỗi ngày rèn luyện một cách trực quan nhất.
-    </p>
-  </div>
+  <!-- Nút biểu tượng nhỏ ở góc dưới bên phải -->
+  <button id="toggleStatsBtn" class="floating-toggle-btn" onclick="toggleStatsPanel()" title="Bật/Tắt Thống kê & Tiến trình">
+    📊
+  </button>
 
   <script>
-    // Danh sách thói quen mẫu
-    const habits = [
+    const totalDays = 31;
+    
+    // Danh sách thói quen (Lưu vào localStorage để có thể thêm/sửa/xóa)
+    let habits = JSON.parse(localStorage.getItem('discipline_habits_2026')) || [
       "Dậy sớm 5:30 AM",
       "Tập thể thao 30p",
       "Đọc sách 20 trang",
       "Học Code / Kỹ năng",
-      "Thiền & Chill 10p",
-      "Không thức khuya"
+      "Thiền & Chill 10p"
     ];
-    
-    const totalDays = 31;
+
+    // Dữ liệu tick chọn
     let trackerData = JSON.parse(localStorage.getItem('discipline_data_2026')) || {};
 
+    function saveHabits() {
+      localStorage.setItem('discipline_habits_2026', JSON.stringify(habits));
+    }
+
+    function saveTrackerData() {
+      localStorage.setItem('discipline_data_2026', JSON.stringify(trackerData));
+    }
+
     // Khởi tạo bảng
-    function initTracker() {
+    function renderTable() {
       const tableHeader = document.getElementById('tableHeader');
       const tableBody = document.getElementById('tableBody');
 
-      tableHeader.innerHTML = '<th style="min-width: 160px; text-align: left;">Mục tiêu / Thói quen</th>';
+      tableHeader.innerHTML = '<th style="min-width: 190px; text-align: left;">Mục tiêu / Thói quen</th>';
       tableBody.innerHTML = '';
 
       for (let d = 1; d <= totalDays; d++) {
@@ -379,11 +366,21 @@
       habits.forEach((habit, hIdx) => {
         const tr = document.createElement('tr');
         
+        // Cột tên thói quen (Hỗ trợ Click để chỉnh sửa hoặc xóa)
         const tdHabit = document.createElement('td');
-        tdHabit.className = 'habit-name';
-        tdHabit.textContent = habit;
+        tdHabit.className = 'habit-col';
+        tdHabit.innerHTML = `
+          <div class="habit-item">
+            <span class="habit-title" title="Nhấn để sửa tên" onclick="editHabit(${hIdx})">${habit}</span>
+            <div class="habit-actions">
+              <button class="btn-icon" onclick="editHabit(${hIdx})" title="Sửa tên">✏️</button>
+              <button class="btn-icon delete" onclick="deleteHabit(${hIdx})" title="Xóa dòng">🗑️</button>
+            </div>
+          </div>
+        `;
         tr.appendChild(tdHabit);
 
+        // Các ngày trong tháng
         for (let d = 1; d <= totalDays; d++) {
           const td = document.createElement('td');
           const key = `${hIdx}_${d}`;
@@ -392,7 +389,7 @@
           const checkBtn = document.createElement('div');
           checkBtn.className = 'cell-check' + (isChecked ? ' done' : '');
           checkBtn.textContent = isChecked ? '✓' : '';
-          checkBtn.onclick = () => toggleCheck(key, checkBtn);
+          checkBtn.onclick = () => toggleCheck(hIdx, d, checkBtn);
 
           td.appendChild(checkBtn);
           tr.appendChild(td);
@@ -401,8 +398,44 @@
       });
     }
 
-    function toggleCheck(key, element) {
+    // Thêm dòng / thói quen mới
+    function addHabit() {
+      const name = prompt("Nhập tên thói quen hoặc mục tiêu mới:");
+      if (name && name.trim()) {
+        habits.push(name.trim());
+        saveHabits();
+        renderTable();
+        renderCharts();
+      }
+    }
+
+    // Sửa tên thói quen
+    function editHabit(index) {
+      const newName = prompt("Sửa tên thói quen:", habits[index]);
+      if (newName && newName.trim()) {
+        habits[index] = newName.trim();
+        saveHabits();
+        renderTable();
+        renderCharts();
+      }
+    }
+
+    // Xóa thói quen
+    function deleteHabit(index) {
+      if (confirm(`Bạn có chắc muốn xóa "${habits[index]}"?`)) {
+        habits.splice(index, 1);
+        saveHabits();
+        renderTable();
+        renderCharts();
+      }
+    }
+
+    // Toggle tick chọn ngày
+    function toggleCheck(hIdx, d, element) {
+      const key = `${hIdx}_${d}`;
       trackerData[key] = !trackerData[key];
+      saveTrackerData();
+
       if (trackerData[key]) {
         element.classList.add('done');
         element.textContent = '✓';
@@ -410,43 +443,36 @@
         element.classList.remove('done');
         element.textContent = '';
       }
-      localStorage.setItem('discipline_data_2026', JSON.stringify(trackerData));
+      renderCharts();
     }
 
     function resetAllData() {
-      if (confirm("Bạn có chắc chắn muốn làm mới dữ liệu?")) {
+      if (confirm("Bạn có chắc chắn muốn xóa toàn bộ dữ liệu để làm lại từ đầu?")) {
         trackerData = {};
         localStorage.removeItem('discipline_data_2026');
-        initTracker();
+        renderTable();
+        renderCharts();
       }
     }
 
-    /* MODAL & CHART LOGIC */
+    /* BẬT / TẮT BẢNG THỐNG KÊ BẰNG NÚT KÝ TỰ NHỎ GÓC DƯỚI */
+    function toggleStatsPanel() {
+      const statsSection = document.getElementById('statsSection');
+      const btn = document.getElementById('toggleStatsBtn');
+      const isHidden = statsSection.classList.toggle('is-hidden');
+
+      if (isHidden) {
+        btn.innerHTML = '📊';
+        btn.style.transform = 'scale(1)';
+      } else {
+        btn.innerHTML = '✕';
+        btn.style.transform = 'scale(1.08) rotate(90deg)';
+      }
+    }
+
+    /* VẼ BẢNG THỐNG KÊ (CHART.JS) */
     let dailyChartInstance = null;
     let habitChartInstance = null;
-
-    function openStatsModal() {
-      const modal = document.getElementById('statsModal');
-      modal.classList.add('active');
-      renderCharts();
-
-      if (screen.orientation && screen.orientation.lock) {
-        screen.orientation.lock('landscape').catch(() => {});
-      }
-    }
-
-    function closeStatsModal() {
-      const modal = document.getElementById('statsModal');
-      modal.classList.remove('active');
-    }
-
-    function closeStatsModalOnOuter(e) {
-      if (e.target.id === 'statsModal') closeStatsModal();
-    }
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeStatsModal();
-    });
 
     function renderCharts() {
       const dailyRates = [];
@@ -458,7 +484,8 @@
         habits.forEach((_, hIdx) => {
           if (trackerData[`${hIdx}_${d}`]) doneCount++;
         });
-        dailyRates.push(Math.round((doneCount / habits.length) * 100));
+        const rate = habits.length ? Math.round((doneCount / habits.length) * 100) : 0;
+        dailyRates.push(rate);
       }
 
       const habitRates = habits.map((_, hIdx) => {
@@ -469,7 +496,7 @@
         return Math.round((doneCount / totalDays) * 100);
       });
 
-      // Biểu đồ ngày
+      // Biểu đồ theo ngày
       const ctxDaily = document.getElementById('dailyChart').getContext('2d');
       if (dailyChartInstance) dailyChartInstance.destroy();
       dailyChartInstance = new Chart(ctxDaily, {
@@ -480,24 +507,24 @@
             label: '% Hoàn thành',
             data: dailyRates,
             borderColor: '#4a9e6e',
-            backgroundColor: 'rgba(74, 158, 110, 0.18)',
+            backgroundColor: 'rgba(74, 158, 110, 0.15)',
             fill: true,
-            tension: 0.4,
-            pointRadius: 3
+            tension: 0.35,
+            pointRadius: 2
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           scales: {
-            y: { min: 0, max: 100, grid: { color: '#222' }, ticks: { color: '#888' } },
-            x: { grid: { display: false }, ticks: { color: '#888' } }
+            y: { min: 0, max: 100, grid: { color: '#222' }, ticks: { color: '#777', font: { size: 10 } } },
+            x: { grid: { display: false }, ticks: { color: '#777', font: { size: 9 } } }
           },
           plugins: { legend: { display: false } }
         }
       });
 
-      // Biểu đồ thói quen
+      // Biểu đồ theo thói quen
       const ctxHabit = document.getElementById('habitChart').getContext('2d');
       if (habitChartInstance) habitChartInstance.destroy();
       habitChartInstance = new Chart(ctxHabit, {
@@ -508,7 +535,7 @@
             label: '% Hoàn thành',
             data: habitRates,
             backgroundColor: 'rgba(52, 120, 246, 0.75)',
-            borderRadius: 6
+            borderRadius: 4
           }]
         },
         options: {
@@ -516,15 +543,17 @@
           maintainAspectRatio: false,
           indexAxis: 'y',
           scales: {
-            x: { min: 0, max: 100, grid: { color: '#222' }, ticks: { color: '#888' } },
-            y: { grid: { display: false }, ticks: { color: '#aaa' } }
+            x: { min: 0, max: 100, grid: { color: '#222' }, ticks: { color: '#777', font: { size: 10 } } },
+            y: { grid: { display: false }, ticks: { color: '#aaa', font: { size: 11 } } }
           },
           plugins: { legend: { display: false } }
         }
       });
     }
 
-    initTracker();
+    // Khởi chạy ứng dụng
+    renderTable();
+    renderCharts();
   </script>
 </body>
 </html>
