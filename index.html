@@ -2,51 +2,63 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2026 Fully Customizable Discipline Tracker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>2026 Mobile & Desktop Discipline Tracker</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0d0d0d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icon-192.png">
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
 body {
   background:#0d0d0d;
   color:#e1e1e1;
   font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
   font-size:12px;
-  height:100vh;
+  height:100dvh;
   overflow:hidden;
   display:flex;
   flex-direction:column;
 }
+
+/* Header */
 .header {
   background:#141414;
   border-bottom:1px solid #282828;
-  padding:8px 16px;
+  padding:6px 12px;
   display:flex;
   align-items:center;
   justify-content:space-between;
   flex-shrink:0;
+  gap:6px;
+  flex-wrap:wrap;
 }
-.header-title { font-size:14px; font-weight:700; color:#fff; letter-spacing:1px; display:flex; align-items:center; gap:8px; }
+.header-title { font-size:13px; font-weight:700; color:#fff; letter-spacing:0.5px; display:flex; align-items:center; gap:6px; }
 .header-title span { color:#4a9e6e; }
-.btn-group { display:flex; gap:6px; align-items:center; }
+.btn-group { display:flex; gap:4px; align-items:center; flex-wrap:wrap; }
 .btn-tool {
-  background:#222; color:#ccc; border:1px solid #333; padding:4px 10px;
+  background:#222; color:#ccc; border:1px solid #333; padding:4px 8px;
   font-size:10px; font-weight:600; border-radius:4px; cursor:pointer; transition:all 0.15s;
+  touch-action: manipulation;
 }
-.btn-tool:hover { background:#333; color:#fff; border-color:#555; }
+.btn-tool:hover, .btn-tool:active { background:#333; color:#fff; border-color:#555; }
 .btn-demo { background:#1e3a29; color:#4af08c; border-color:#2a5a3c; }
-.btn-demo:hover { background:#284e37; color:#fff; }
+.btn-toggle-stats { background:#2a2a38; color:#77a0ff; border-color:#3b3b54; }
 
+/* Month Tabs */
 .month-tabs {
   display:flex;
   background:#111;
   border-bottom:1px solid #222;
   overflow-x:auto;
-  padding:0 8px;
+  padding:0 4px;
   flex-shrink:0;
+  -webkit-overflow-scrolling: touch;
 }
 .month-tab {
-  padding:6px 14px;
+  padding:6px 12px;
   cursor:pointer;
   color:#777;
   font-size:11px;
@@ -54,13 +66,12 @@ body {
   white-space:nowrap;
   border-bottom:2px solid transparent;
   transition:all 0.15s;
-  letter-spacing:0.5px;
 }
-.month-tab:hover { color:#bbb; }
 .month-tab.active { color:#fff; border-bottom:2px solid #4a9e6e; background:#181818; }
 
-.main-container { display:flex; flex:1; overflow:hidden; }
-.left-panel { flex:1; overflow:auto; background:#0d0d0d; }
+/* Main Layout */
+.main-container { display:flex; flex:1; overflow:hidden; position:relative; }
+.left-panel { flex:1; overflow:auto; background:#0d0d0d; -webkit-overflow-scrolling: touch; }
 .right-panel {
   width:340px; min-width:300px;
   background:#121212;
@@ -68,14 +79,18 @@ body {
   overflow-y:auto;
   display:flex;
   flex-direction:column;
+  transition: all 0.2s ease-in-out;
+  -webkit-overflow-scrolling: touch;
 }
+.right-panel.panel-hidden { display:none !important; }
 
-/* Table Grid Styles */
+/* Table Grid */
 .tracker-table { border-collapse:collapse; min-width:100%; table-layout:fixed; }
 .tracker-table th, .tracker-table td { border:1px solid #222; text-align:center; padding:0; }
+
 .th-month {
   background:#1a1a1a; color:#fff; font-weight:700; font-size:11px;
-  padding:4px 8px; width:230px; min-width:230px;
+  padding:4px 6px; width:220px; min-width:220px;
   position:sticky; left:0; z-index:10; border-right:2px solid #333;
 }
 .th-month-box { display:flex; align-items:center; justify-content:space-between; width:100%; }
@@ -83,35 +98,31 @@ body {
   background:#1e3a29; color:#4af08c; border:1px solid #2a5a3c;
   padding:2px 6px; font-size:9px; border-radius:3px; cursor:pointer; font-weight:700;
 }
-.btn-add-row:hover { background:#284e37; color:#fff; }
-.btn-add-row:disabled { background:#222; color:#555; border-color:#333; cursor:not-allowed; }
 
-.th-week { background:#161616; color:#888; font-size:9px; font-weight:700; padding:4px 2px; letter-spacing:0.5px; }
-.th-day-name { background:#141414; color:#666; font-size:8px; font-weight:600; width:26px; min-width:26px; height:20px; }
-.th-day-num { background:#111; color:#777; font-size:9px; width:26px; min-width:26px; height:20px; }
+.th-week { background:#161616; color:#888; font-size:9px; font-weight:700; padding:4px 2px; }
+.th-day-name { background:#141414; color:#666; font-size:8px; font-weight:600; width:28px; min-width:28px; height:20px; }
+.th-day-num { background:#111; color:#777; font-size:9px; width:28px; min-width:28px; height:20px; }
 
 .habit-name {
   background:#161616; color:#ddd; font-size:11px; text-align:left;
-  padding:2px 6px; white-space:nowrap; position:sticky; left:0; z-index:4;
-  border-right:2px solid #2e2e2e; height:28px;
+  padding:2px 4px; white-space:nowrap; position:sticky; left:0; z-index:4;
+  border-right:2px solid #2e2e2e; height:32px; width:220px; min-width:220px;
 }
-.habit-name:hover { background:#202020; }
-.habit-wrap { display:flex; align-items:center; justify-content:space-between; gap:4px; width:100%; height:100%; }
+.habit-wrap { display:flex; align-items:center; justify-content:space-between; gap:2px; width:100%; height:100%; }
 .habit-input {
   background:transparent; border:1px solid transparent; color:#ddd;
-  font-size:11px; width:100%; outline:none; padding:1px 4px; border-radius:2px;
+  font-size:10px; width:100%; outline:none; padding:1px 2px; border-radius:2px;
+  text-overflow: ellipsis;
 }
 .habit-input:focus { background:#222; border-color:#4a9e6e; color:#fff; }
 .btn-del-row {
-  background:transparent; border:none; color:#666; cursor:pointer;
-  font-size:11px; padding:0 4px; border-radius:2px; opacity:0; transition:opacity 0.15s;
+  background:transparent; border:none; color:#777; cursor:pointer;
+  font-size:11px; padding:0 4px; border-radius:2px;
 }
-.habit-name:hover .btn-del-row { opacity:1; }
-.btn-del-row:hover { color:#e97366; background:rgba(233,115,102,0.15); }
 
-.cb-cell { width:26px; min-width:26px; height:28px; padding:0; }
+.cb-cell { width:28px; min-width:28px; height:32px; padding:0; vertical-align:middle; }
 .cb-cell input[type=checkbox] {
-  width:14px; height:14px; cursor:pointer; accent-color:#4a9e6e; margin-top:3px;
+  width:16px; height:16px; cursor:pointer; accent-color:#4a9e6e; margin:0 auto; display:block;
 }
 .cb-done { background:#0f2618 !important; }
 .cb-today { background:#12172b !important; outline:1px inset #3a5ccc; }
@@ -120,10 +131,10 @@ body {
 
 .wellness-label {
   background:#141414; color:#888; font-size:9px; text-align:left;
-  padding:3px 10px; position:sticky; left:0; z-index:4;
-  border-right:2px solid #2e2e2e; height:24px; font-weight:600;
+  padding:3px 6px; position:sticky; left:0; z-index:4;
+  border-right:2px solid #2e2e2e; height:26px; font-weight:600; width:220px; min-width:220px;
 }
-.wellness-cell { height:24px; background:#0f0f0f; }
+.wellness-cell { height:26px; background:#0f0f0f; }
 .wellness-input {
   width:100%; height:100%; background:transparent; border:none;
   color:#aaa; font-size:10px; text-align:center; outline:none;
@@ -131,38 +142,38 @@ body {
 .wellness-input:focus { color:#fff; background:#181828; }
 
 /* Right Panel Widgets */
-.rpanel { border-bottom:1px solid #222; padding:12px; }
+.rpanel { border-bottom:1px solid #222; padding:10px; }
 .rp-title {
   font-size:10px; font-weight:700; color:#aaa; text-align:center;
-  letter-spacing:1px; background:#1a1a1a; padding:4px; border-radius:3px; margin-bottom:10px;
+  letter-spacing:1px; background:#1a1a1a; padding:4px; border-radius:3px; margin-bottom:8px;
   border:1px solid #252525;
 }
-.chart-box { position:relative; height:120px; width:100%; }
-.chart-box-sm { position:relative; height:95px; width:100%; }
-.chart-box-xs { position:relative; height:85px; width:100%; }
+.chart-box { position:relative; height:115px; width:100%; }
+.chart-box-sm { position:relative; height:90px; width:100%; }
+.chart-box-xs { position:relative; height:80px; width:100%; }
 
 .stats-wrap { display:flex; gap:10px; align-items:center; }
 .stats-col { flex:1; display:flex; flex-direction:column; gap:4px; }
 .stat-row {
   display:flex; justify-content:space-between; align-items:center;
-  background:#181818; padding:5px 8px; border-radius:3px; border-left:3px solid #444;
+  background:#181818; padding:4px 6px; border-radius:3px; border-left:3px solid #444;
 }
 .stat-row.s-goal { border-color:#5e9fe8; }
 .stat-row.s-done { border-color:#4a9e6e; }
 .stat-row.s-left { border-color:#de9255; }
 .stat-label { font-size:9px; color:#777; font-weight:600; }
-.stat-val { font-size:13px; font-weight:700; color:#fff; }
+.stat-val { font-size:12px; font-weight:700; color:#fff; }
 
-.donut-wrap { position:relative; width:86px; height:86px; flex-shrink:0; }
+.donut-wrap { position:relative; width:80px; height:80px; flex-shrink:0; }
 .donut-label {
   position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-  font-size:15px; font-weight:800; color:#fff;
+  font-size:14px; font-weight:800; color:#fff;
 }
 
 .atbl, .t10tbl { width:100%; border-collapse:collapse; font-size:9px; }
 .atbl th, .t10tbl th { background:#181818; color:#777; padding:4px 2px; font-size:8px; border-bottom:1px solid #252525; }
 .atbl td, .t10tbl td { padding:3px 2px; text-align:center; border-bottom:1px solid #1a1a1a; color:#ccc; }
-.mpbar { height:6px; background:#222; border-radius:3px; overflow:hidden; width:50px; margin:0 auto; }
+.mpbar { height:5px; background:#222; border-radius:3px; overflow:hidden; width:45px; margin:0 auto; }
 .mpfill { height:100%; border-radius:3px; }
 .ph { color:#4a9e6e; font-weight:700; }
 .pm { color:#de9255; font-weight:700; }
@@ -170,31 +181,47 @@ body {
 
 .rbadge {
   display:inline-flex; align-items:center; justify-content:center;
-  width:16px; height:16px; border-radius:50%; background:#252525; color:#888; font-size:8px; font-weight:700;
+  width:15px; height:15px; border-radius:50%; background:#252525; color:#888; font-size:8px; font-weight:700;
 }
 .r1 { background:#c9a227; color:#000; }
 .r2 { background:#a0a0a0; color:#000; }
 .r3 { background:#cd7f32; color:#000; }
 
-::-webkit-scrollbar { width:5px; height:5px; }
+/* Responsive Mobile Rules */
+@media (max-width: 768px) {
+  .main-container { flex-direction: column; }
+  .right-panel {
+    width: 100% !important;
+    min-width: 100% !important;
+    border-left: none;
+    border-top: 2px solid #252525;
+    max-height: 50vh;
+  }
+  .th-month, .habit-name, .wellness-label {
+    width: 140px !important;
+    min-width: 140px !important;
+  }
+  .cb-cell input[type=checkbox] {
+    width: 18px !important;
+    height: 18px !important;
+  }
+}
+
+::-webkit-scrollbar { width:4px; height:4px; }
 ::-webkit-scrollbar-track { background:#0d0d0d; }
-::-webkit-scrollbar-thumb { background:#252525; border-radius:3px; }
-::-webkit-scrollbar-thumb:hover { background:#3d3d3d; }
+::-webkit-scrollbar-thumb { background:#252525; border-radius:2px; }
 </style>
-<link rel="manifest" href="manifest.json">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
 
 <div class="header">
-  <div class="header-title">🎯 <span>2026</span> DYNAMIC DISCIPLINE TRACKER</div>
+  <div class="header-title">🎯 <span>2026</span> TRACKER</div>
   <div class="btn-group">
-    <button class="btn-tool btn-demo" onclick="loadDemoData()">🎲 Tải Demo</button>
+    <button class="btn-tool btn-toggle-stats" onclick="toggleStats()"><span id="statsBtnTxt">📊 Hiện Thống Kê</span></button>
+    <button class="btn-tool btn-demo" onclick="loadDemoData()">🎲 Demo</button>
     <button class="btn-tool" onclick="exportData()">📥 Xuất JSON</button>
-    <button class="btn-tool" onclick="clearData()">🗑️ Xóa Tất Cả</button>
-    <span id="hdate" style="color:#555;font-size:10px;margin-left:8px"></span>
+    <button class="btn-tool" onclick="clearData()">🗑️ Xóa</button>
+    <span id="hdate" style="color:#555;font-size:9px;margin-left:4px"></span>
   </div>
 </div>
 
@@ -203,7 +230,7 @@ body {
 <div class="main-container">
   <div class="left-panel" id="left-panel"></div>
   
-  <div class="right-panel">
+  <div class="right-panel panel-hidden" id="right-panel">
     <div class="rpanel">
       <div class="rp-title">📊 DAILY PROGRESS</div>
       <div class="chart-box"><canvas id="cDaily"></canvas></div>
@@ -219,11 +246,11 @@ body {
       <div class="stats-wrap">
         <div class="stats-col">
           <div class="stat-row s-goal"><span class="stat-label">Goal</span><span class="stat-val" id="sGoal">0</span></div>
-          <div class="stat-row s-done"><span class="stat-label">Completed</span><span class="stat-val" id="sDone">0</span></div>
+          <div class="stat-row s-done"><span class="stat-label">Done</span><span class="stat-val" id="sDone">0</span></div>
           <div class="stat-row s-left"><span class="stat-label">Left</span><span class="stat-val" id="sLeft">0</span></div>
         </div>
         <div class="donut-wrap">
-          <canvas id="cDonut" width="86" height="86"></canvas>
+          <canvas id="cDonut" width="80" height="80"></canvas>
           <div class="donut-label" id="dPct">0%</div>
         </div>
       </div>
@@ -241,7 +268,7 @@ body {
       <div class="rp-title">💤 OVERALL WELLNESS</div>
       <div class="chart-box-xs"><canvas id="cWell"></canvas></div>
     </div>
-    
+
     <div class="rpanel">
       <div class="rp-title">🏆 TOP HABITS</div>
       <table class="t10tbl">
@@ -257,24 +284,22 @@ const YEAR = 2026;
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DAYS_SHORT = ['Su','Mo','Tu','We','Th','Fr','Sa'];
 
-// THÓI QUEN MẶC ĐỊNH
 const DEFAULT_HABITS = [
   { id: 'h1', name: '⏰ Dậy 06:00 AM' },
   { id: 'h2', name: '🇬🇧 Học Tiếng Anh (3.5h)' },
   { id: 'h3', name: '📖 Học Bài trên lớp (2h)' },
-  { id: 'h4', name: '💻 Học Chuyên ngành CS (30p-1h)' },
+  { id: 'h4', name: '💻 Học Chuyên ngành CS' },
   { id: 'h5', name: '🏋️ Tập Gym (1h)' },
-  { id: 'h6', name: '💤 Ngủ trưa (30p - 1h)' },
-  { id: 'h7', name: '📵 MXH & Giải trí (Tối đa 2h)' },
-  { id: 'h8', name: '😴 Ngủ 23:00 (11 PM)' }
+  { id: 'h6', name: '💤 Ngủ trưa (30p-1h)' },
+  { id: 'h7', name: '📵 MXH (Tối đa 2h)' },
+  { id: 'h8', name: '😴 Ngủ 23:00' }
 ];
 
 const SK = 'ht2026_dynamic_v3';
-let M = new Date().getFullYear() === YEAR ? new Date().getMonth() : 9; // Mặc định Tháng 10
+let M = new Date().getFullYear() === YEAR ? new Date().getMonth() : 9;
 let DATA = {};
 let HABITS = [];
 
-// Khôi phục dữ liệu từ LocalStorage
 try { 
   DATA = JSON.parse(localStorage.getItem(SK) || '{}'); 
   HABITS = DATA.habits && DATA.habits.length > 0 ? DATA.habits : [...DEFAULT_HABITS];
@@ -306,32 +331,29 @@ MONTHS.forEach((name,i)=>{
   mtabs.appendChild(t);
 });
 
-// Thêm thói quen mới
+function toggleStats(){
+  const rp = document.getElementById('right-panel');
+  const txt = document.getElementById('statsBtnTxt');
+  rp.classList.toggle('panel-hidden');
+  txt.textContent = rp.classList.contains('panel-hidden') ? '📊 Hiện Thống Kê' : '❌ Ẩn Thống Kê';
+  if(!rp.classList.contains('panel-hidden')){
+    setTimeout(() => { cD.resize(); cW.resize(); cDo.resize(); cWl.resize(); }, 100);
+  }
+}
+
 function addHabit(){
-  if(HABITS.length >= 12){
-    alert('Bạn chỉ có thể thêm tối đa 12 hàng!');
-    return;
-  }
-  const newId = 'h_' + Date.now();
-  HABITS.push({ id: newId, name: `📌 Thói quen mới ${HABITS.length + 1}` });
-  save();
-  renderTable();
-  updateAll();
+  if(HABITS.length >= 12){ alert('Tối đa 12 hàng!'); return; }
+  HABITS.push({ id: 'h_' + Date.now(), name: `📌 Thói quen ${HABITS.length + 1}` });
+  save(); renderTable(); updateAll();
 }
 
-// Xóa thói quen
 function deleteHabit(hid){
-  if(HABITS.length <= 1){
-    alert('Phải giữ lại ít nhất 1 hàng!');
-    return;
-  }
+  if(HABITS.length <= 1){ alert('Giữ ít nhất 1 hàng!'); return; }
   HABITS = HABITS.filter(h => h.id !== hid);
-  save();
-  renderTable();
-  updateAll();
+  Object.keys(DATA).forEach(k => { if(k.endsWith(hid)) delete DATA[k]; });
+  save(); renderTable(); updateAll();
 }
 
-// Render Table
 function renderTable(){
   const days = daysInMonth(M);
   const today = new Date();
@@ -347,8 +369,6 @@ function renderTable(){
   const wkNums = Object.keys(wkGroups).map(Number).sort((a,b)=>a-b);
 
   let h = '<table class="tracker-table"><thead>';
-  
-  // Header Row 1: Tên tháng + Nút Thêm Hàng
   const isMax = HABITS.length >= 12;
   h += `<tr><th class="th-month" rowspan="3">
     <div class="th-month-box">
@@ -357,9 +377,7 @@ function renderTable(){
     </div>
   </th>`;
   
-  wkNums.forEach(wk => {
-    h += `<th class="th-week" colspan="${wkGroups[wk].length}">Week ${wk}</th>`;
-  });
+  wkNums.forEach(wk => { h += `<th class="th-week" colspan="${wkGroups[wk].length}">W${wk}</th>`; });
   h += '</tr><tr>';
 
   for(let d=1; d<=days; d++){
@@ -377,12 +395,11 @@ function renderTable(){
   }
   h += '</tr></thead><tbody>';
 
-  // Habit Rows
   HABITS.forEach(hb => {
     h += `<tr><td class="habit-name">
       <div class="habit-wrap">
-        <input type="text" class="habit-input" value="${hb.name}" data-hid="${hb.id}" placeholder="Nhập tên thói quen...">
-        <button class="btn-del-row" onclick="deleteHabit('${hb.id}')" title="Xóa hàng này">✕</button>
+        <input type="text" class="habit-input" value="${hb.name}" data-hid="${hb.id}">
+        <button class="btn-del-row" onclick="deleteHabit('${hb.id}')">✕</button>
       </div>
     </td>`;
     for(let d=1; d<=days; d++){
@@ -403,7 +420,7 @@ function renderTable(){
   });
 
   // Mood row
-  h += '<tr><td class="wellness-label">😊 Tâm trạng Mood (1-5)</td>';
+  h += '<tr><td class="wellness-label">😊 Mood (1-5)</td>';
   for(let d=1; d<=days; d++){
     const key = moodKey(M,d);
     const v = DATA[key] != null ? DATA[key] : '';
@@ -412,7 +429,7 @@ function renderTable(){
   h += '</tr>';
 
   // Sleep row
-  h += '<tr><td class="wellness-label">💤 Số giờ ngủ Sleep (hrs)</td>';
+  h += '<tr><td class="wellness-label">💤 Sleep (h)</td>';
   for(let d=1; d<=days; d++){
     const key = sleepKey(M,d);
     const v = DATA[key] != null ? DATA[key] : '';
@@ -422,7 +439,6 @@ function renderTable(){
 
   document.getElementById('left-panel').innerHTML = h;
 
-  // Bind checkbox events
   document.querySelectorAll('[data-k]').forEach(el => {
     el.addEventListener('change', function(){
       DATA[this.dataset.k] = this.checked;
@@ -434,25 +450,17 @@ function renderTable(){
     });
   });
 
-  // Bind habit name input change events
   document.querySelectorAll('.habit-input').forEach(el => {
-    el.addEventListener('change', function(){
-      const hid = this.dataset.hid;
-      const hb = HABITS.find(h => h.id === hid);
-      if(hb){
-        hb.name = this.value || 'Thói quen mới';
-        save();
-        updateAll();
-      }
+    el.addEventListener('input', function(){
+      const hb = HABITS.find(h => h.id === this.dataset.hid);
+      if(hb){ hb.name = this.value || 'Thói quen mới'; save(); updateAnalysis(computeStats()); updateTop10(computeStats()); }
     });
   });
 
-  // Bind wellness inputs
   document.querySelectorAll('[data-wk]').forEach(el => {
     el.addEventListener('change', function(){
       DATA[this.dataset.wk] = this.value !== '' ? parseFloat(this.value) : null;
-      save();
-      refreshWell();
+      save(); refreshWell();
     });
   });
 }
@@ -463,8 +471,7 @@ function computeStats(){
   const hLen = HABITS.length || 1;
   
   for(let d=1; d<=days; d++){
-    let done = 0;
-    let filled = false;
+    let done = 0, filled = false;
     HABITS.forEach(h => { 
       if(DATA[cbKey(M,d,h.id)] !== undefined) filled = true;
       if(DATA[cbKey(M,d,h.id)]) done++; 
@@ -476,9 +483,7 @@ function computeStats(){
   const weeklyPct = [];
   for(let wk=1; wk<=numWeeks; wk++){
     const vals = [];
-    for(let d=1; d<=days; d++){
-      if(weekNum(M,d) === wk) vals.push(dailyPct[d-1]);
-    }
+    for(let d=1; d<=days; d++){ if(weekNum(M,d) === wk) vals.push(dailyPct[d-1]); }
     weeklyPct.push(vals.length ? Math.round(vals.reduce((a,b)=>a+b,0) / vals.length) : 0);
   }
 
@@ -495,14 +500,13 @@ function computeStats(){
   const moodArr = [], sleepArr = [], lbls = [];
   for(let d=1; d<=days; d++){
     lbls.push(d);
-    const mv = DATA[moodKey(M,d)]; moodArr.push(mv != null ? mv : null);
-    const sv = DATA[sleepKey(M,d)]; sleepArr.push(sv != null ? sv : null);
+    moodArr.push(DATA[moodKey(M,d)] != null ? DATA[moodKey(M,d)] : null);
+    sleepArr.push(DATA[sleepKey(M,d)] != null ? DATA[sleepKey(M,d)] : null);
   }
 
   return { dailyPct, weeklyPct, habitStats, totalGoal, totalDone, days, moodArr, sleepArr, lbls, numWeeks };
 }
 
-// Chart Instances
 Chart.defaults.color = '#666';
 Chart.defaults.borderColor = 'rgba(255,255,255,0.05)';
 let cD, cW, cDo, cWl;
@@ -511,69 +515,33 @@ function initCharts(){
   const s = computeStats();
   cD = new Chart(document.getElementById('cDaily'), {
     type:'bar',
-    data:{
-      labels: Array.from({length:s.days}, (_,i) => i+1),
-      datasets:[{
-        data: s.dailyPct,
-        backgroundColor: s.dailyPct.map(v => v >= 80 ? '#4a9e6e' : v >= 50 ? '#de9255' : '#e97366'),
-        borderRadius: 2
-      }]
-    },
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      plugins:{ legend:{display:false} },
-      scales:{
-        x:{ ticks:{font:{size:7}, maxRotation:0, maxTicksLimit:16, color:'#555'}, grid:{display:false} },
-        y:{ min:0, max:100, ticks:{font:{size:7}, color:'#555', callback:v=>v+'%'}, grid:{color:'rgba(255,255,255,0.03)'} }
-      }
-    }
+    data:{ labels: Array.from({length:s.days}, (_,i) => i+1), datasets:[{ data: s.dailyPct, backgroundColor: s.dailyPct.map(v => v >= 80 ? '#4a9e6e' : v >= 50 ? '#de9255' : '#e97366'), borderRadius:2 }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false} }, scales:{ x:{ ticks:{font:{size:7}, color:'#555'}, grid:{display:false} }, y:{ min:0, max:100, ticks:{font:{size:7}, color:'#555'}, grid:{color:'rgba(255,255,255,0.03)'} } } }
   });
 
   cW = new Chart(document.getElementById('cWeekly'), {
     type:'bar',
-    data:{
-      labels: Array.from({length:s.numWeeks}, (_,i) => 'Wk '+(i+1)),
-      datasets:[{ data: s.weeklyPct, backgroundColor:'#2e2e2e', hoverBackgroundColor:'#4a9e6e', borderRadius:3 }]
-    },
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      plugins:{ legend:{display:false} },
-      scales:{
-        x:{ ticks:{font:{size:8}, color:'#666'}, grid:{display:false} },
-        y:{ min:0, max:100, ticks:{font:{size:7}, color:'#555', callback:v=>v+'%'}, grid:{color:'rgba(255,255,255,0.03)'} }
-      }
-    }
+    data:{ labels: Array.from({length:s.numWeeks}, (_,i) => 'W'+(i+1)), datasets:[{ data: s.weeklyPct, backgroundColor:'#2e2e2e', borderRadius:3 }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false} }, scales:{ x:{ ticks:{font:{size:8}, color:'#666'}, grid:{display:false} }, y:{ min:0, max:100, ticks:{font:{size:7}, color:'#555'}, grid:{color:'rgba(255,255,255,0.03)'} } } }
   });
 
   const pct = s.totalGoal > 0 ? Math.round((s.totalDone / s.totalGoal) * 100) : 0;
   cDo = new Chart(document.getElementById('cDonut'), {
     type:'doughnut',
     data:{ datasets:[{ data:[pct, 100-pct], backgroundColor:['#4a9e6e','#1e1e1e'], borderWidth:0 }] },
-    options:{ responsive:false, cutout:'72%', plugins:{ legend:{display:false}, tooltip:{enabled:false} } }
+    options:{ responsive:false, cutout:'70%', plugins:{ legend:{display:false}, tooltip:{enabled:false} } }
   });
 
   cWl = new Chart(document.getElementById('cWell'), {
     type:'line',
-    data:{
-      labels: s.lbls,
-      datasets:[
-        { label:'Mood', data:s.moodArr, borderColor:'#4a9e6e', backgroundColor:'rgba(74,158,110,0.1)', pointRadius:1.5, tension:0.3, spanGaps:true },
-        { label:'Sleep', data:s.sleepArr, borderColor:'#5e9fe8', backgroundColor:'rgba(94,159,232,0.1)', pointRadius:1.5, tension:0.3, spanGaps:true }
-      ]
-    },
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      plugins:{ legend:{ display:true, position:'bottom', labels:{font:{size:8}, boxWidth:10, padding:2} } },
-      scales:{
-        x:{ ticks:{font:{size:7}, maxTicksLimit:10, color:'#555'}, grid:{display:false} },
-        y:{ ticks:{font:{size:7}, color:'#555'}, grid:{color:'rgba(255,255,255,0.03)'} }
-      }
-    }
+    data:{ labels: s.lbls, datasets:[
+      { label:'Mood', data:s.moodArr, borderColor:'#4a9e6e', pointRadius:1, tension:0.3, spanGaps:true },
+      { label:'Sleep', data:s.sleepArr, borderColor:'#5e9fe8', pointRadius:1, tension:0.3, spanGaps:true }
+    ]},
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:true, position:'bottom', labels:{font:{size:8}, boxWidth:8} } }, scales:{ x:{ ticks:{font:{size:7}, color:'#555'}, grid:{display:false} }, y:{ ticks:{font:{size:7}, color:'#555'}, grid:{color:'rgba(255,255,255,0.03)'} } } }
   });
 
-  updateStatUI(s);
-  updateAnalysis(s);
-  updateTop10(s);
+  updateStatUI(s); updateAnalysis(s); updateTop10(s);
 }
 
 function updateAll(){
@@ -581,19 +549,13 @@ function updateAll(){
   cD.data.datasets[0].data = s.dailyPct;
   cD.data.datasets[0].backgroundColor = s.dailyPct.map(v => v >= 80 ? '#4a9e6e' : v >= 50 ? '#de9255' : '#e97366');
   cD.update();
-
   cW.data.datasets[0].data = s.weeklyPct;
-  cW.data.labels = Array.from({length:s.numWeeks}, (_,i) => 'Wk '+(i+1));
+  cW.data.labels = Array.from({length:s.numWeeks}, (_,i) => 'W'+(i+1));
   cW.update();
-
   const pct = s.totalGoal > 0 ? Math.round((s.totalDone / s.totalGoal) * 100) : 0;
   cDo.data.datasets[0].data = [pct, 100-pct];
   cDo.update();
-
-  updateStatUI(s);
-  updateAnalysis(s);
-  updateTop10(s);
-  refreshWell();
+  updateStatUI(s); updateAnalysis(s); updateTop10(s); refreshWell();
 }
 
 function refreshWell(){
@@ -641,46 +603,20 @@ function updateTop10(s){
 function switchMonth(m){
   M = m;
   document.querySelectorAll('.month-tab').forEach(t => t.classList.toggle('active', parseInt(t.dataset.m) === m));
-  renderTable();
-  const s = computeStats();
-  cD.data.labels = Array.from({length:s.days}, (_,i) => i+1);
-  cD.data.datasets[0].data = s.dailyPct;
-  cD.data.datasets[0].backgroundColor = s.dailyPct.map(v => v >= 80 ? '#4a9e6e' : v >= 50 ? '#de9255' : '#e97366');
-  cD.update();
-  cW.data.labels = Array.from({length:s.numWeeks}, (_,i) => 'Wk '+(i+1));
-  cW.data.datasets[0].data = s.weeklyPct;
-  cW.update();
-  updateStatUI(s);
-  updateAnalysis(s);
-  updateTop10(s);
-  refreshWell();
+  renderTable(); updateAll();
 }
 
 function loadDemoData(){
   const days = daysInMonth(M);
   HABITS.forEach((h, hIdx) => {
-    for(let d=1; d<=days; d++){
-      const rate = hIdx < 4 ? 0.85 : 0.70;
-      DATA[cbKey(M,d,h.id)] = Math.random() < rate;
-    }
+    for(let d=1; d<=days; d++){ DATA[cbKey(M,d,h.id)] = Math.random() < (hIdx < 4 ? 0.85 : 0.70); }
   });
-  for(let d=1; d<=days; d++){
-    DATA[moodKey(M,d)] = Math.floor(Math.random() * 2) + 4; 
-    DATA[sleepKey(M,d)] = 7; 
-  }
-  save();
-  renderTable();
-  updateAll();
+  for(let d=1; d<=days; d++){ DATA[moodKey(M,d)] = Math.floor(Math.random() * 2) + 4; DATA[sleepKey(M,d)] = 7; }
+  save(); renderTable(); updateAll();
 }
 
 function clearData(){
-  if(confirm('Bạn có chắc chắn muốn xóa toàn bộ dữ liệu?')){
-    DATA = {};
-    HABITS = [...DEFAULT_HABITS];
-    save();
-    renderTable();
-    updateAll();
-  }
+  if(confirm('Xóa dữ liệu?')){ DATA = {}; HABITS = [...DEFAULT_HABITS]; save(); renderTable(); updateAll(); }
 }
 
 function exportData(){
@@ -695,7 +631,10 @@ function exportData(){
 
 document.getElementById('hdate').textContent = new Date().toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric', year:'numeric'});
 
-document.querySelectorAll('.month-tab')[M].scrollIntoView({inline:'center'});
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js');
+}
+
 renderTable();
 initCharts();
 </script>
