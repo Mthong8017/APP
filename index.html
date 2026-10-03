@@ -75,7 +75,7 @@ body {
 .main-container { display:flex; flex:1; overflow:hidden; position:relative; }
 .left-panel { flex:1; overflow:auto; background:#0d0d0d; -webkit-overflow-scrolling: touch; }
 
-/* Right Panel với Animation mượt mà */
+/* Right Panel */
 .right-panel {
   width:340px; min-width:300px;
   background:#121212;
@@ -85,7 +85,6 @@ body {
   flex-direction:column;
   -webkit-overflow-scrolling: touch;
   
-  /* Animation slide/fade iOS & HyperOS Style */
   transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.15),
               opacity 0.3s ease,
               max-width 0.35s ease,
@@ -214,7 +213,6 @@ body {
 .r2 { background:#a0a0a0; color:#000; }
 .r3 { background:#cd7f32; color:#000; }
 
-/* NÚT TỔNG THỐNG KÊ KÝ TỰ NHỎ Ở GÓC DƯỚI BÊN PHẢI */
 .floating-toggle-btn {
   position: fixed;
   bottom: 18px;
@@ -252,9 +250,6 @@ body {
   transform: rotate(90deg);
 }
 
-/* ==========================================
-   TỐI ƯU MÀN HÌNH NGANG (LANDSCAPE MODE)
-   ========================================== */
 @media screen and (orientation: landscape) {
   .main-container { flex-direction: row; }
   .right-panel {
@@ -280,7 +275,6 @@ body {
   }
 }
 
-/* Responsive Mobile Rules (Dọc) */
 @media (max-width: 768px) and (orientation: portrait) {
   .main-container { flex-direction: column; }
   .right-panel {
@@ -313,7 +307,6 @@ body {
     <button class="btn-tool btn-toggle-stats" onclick="toggleStats()"><span id="statsBtnTxt">📊 Hiện Thống Kê</span></button>
     <button class="btn-tool btn-demo" onclick="loadDemoData()">🎲 Demo</button>
     <button class="btn-tool" onclick="exportData()">📥 Xuất JSON</button>
-    <button class="btn-tool" onclick="clearData()">🗑️ Xóa</button>
     <span id="hdate" style="color:#555;font-size:9px;margin-left:4px"></span>
   </div>
 </div>
@@ -372,7 +365,6 @@ body {
   </div>
 </div>
 
-<!-- Nút ký tự nhỏ floating góc dưới bên phải -->
 <button id="floatingToggleBtn" class="floating-toggle-btn" onclick="toggleStats()" title="Bật/Tắt Thống kê & Tiến trình">
   📊
 </button>
@@ -405,6 +397,7 @@ try {
   HABITS = [...DEFAULT_HABITS];
 }
 
+// Hàm tự động lưu dữ liệu thời gian thực
 function save(){ 
   DATA.habits = HABITS;
   localStorage.setItem(SK, JSON.stringify(DATA)); 
@@ -418,7 +411,6 @@ function cbKey(m,d,hid){ return `${YEAR}-${m}-${d}-${hid}`; }
 function moodKey(m,d){ return `md-${YEAR}-${m}-${d}`; }
 function sleepKey(m,d){ return `sl-${YEAR}-${m}-${d}`; }
 
-// Render Month Tabs
 const mtabs = document.getElementById('mtabs');
 MONTHS.forEach((name,i)=>{
   const t = document.createElement('div');
@@ -429,7 +421,6 @@ MONTHS.forEach((name,i)=>{
   mtabs.appendChild(t);
 });
 
-// Hàm Toggle Thống Kê (Sử dụng đồng thời cho nút Header & Nút Ký tự nhỏ ở góc)
 function toggleStats(){
   const rp = document.getElementById('right-panel');
   const txt = document.getElementById('statsBtnTxt');
@@ -551,10 +542,11 @@ function renderTable(){
 
   document.getElementById('left-panel').innerHTML = h;
 
+  // Lắng nghe sự kiện để tự động lưu ngay lập tức
   document.querySelectorAll('[data-k]').forEach(el => {
     el.addEventListener('change', function(){
       DATA[this.dataset.k] = this.checked;
-      save();
+      save(); // Tự động lưu
       const td = this.closest('td');
       if(this.checked){ td.classList.add('cb-done'); td.classList.remove('cb-wknd'); }
       else { td.classList.remove('cb-done'); if(td.classList.contains('cb-wknd')) td.classList.add('cb-wknd'); }
@@ -727,10 +719,6 @@ function loadDemoData(){
   save(); renderTable(); updateAll();
 }
 
-function clearData(){
-  if(confirm('Xóa dữ liệu?')){ DATA = {}; HABITS = [...DEFAULT_HABITS]; save(); renderTable(); updateAll(); }
-}
-
 function exportData(){
   const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(DATA, null, 2));
   const dlAnchor = document.createElement('a');
@@ -740,6 +728,20 @@ function exportData(){
   dlAnchor.click();
   dlAnchor.remove();
 }
+
+// Tự động yêu cầu khóa màn hình ngang khi vừa mở ứng dụng hoặc khi chạm
+async function forceLandscape() {
+  try {
+    if (screen.orientation && screen.orientation.lock) {
+      await screen.orientation.lock('landscape');
+    }
+  } catch (err) {
+    console.log("Xoay ngang tự động tối ưu nhất khi ứng dụng được Thêm vào Màn hình chính (PWA).");
+  }
+}
+
+window.addEventListener('DOMContentLoaded', forceLandscape);
+window.addEventListener('touchstart', forceLandscape, { once: true });
 
 document.getElementById('hdate').textContent = new Date().toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric', year:'numeric'});
 
