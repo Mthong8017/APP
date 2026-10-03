@@ -1,642 +1,530 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>2026 Mobile & Desktop Discipline Tracker</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0d0d0d">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="icon-192.png">
-<style>
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
-body {
-  background:#0d0d0d;
-  color:#e1e1e1;
-  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-  font-size:12px;
-  height:100dvh;
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
-}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 Fully Customizable Discipline Tracker</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      background: #0d0d0d;
+      color: #e1e1e1;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      font-size: 12px;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
 
-/* Header */
-.header {
-  background:#141414;
-  border-bottom:1px solid #282828;
-  padding:6px 12px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  flex-shrink:0;
-  gap:6px;
-  flex-wrap:wrap;
-}
-.header-title { font-size:13px; font-weight:700; color:#fff; letter-spacing:0.5px; display:flex; align-items:center; gap:6px; }
-.header-title span { color:#4a9e6e; }
-.btn-group { display:flex; gap:4px; align-items:center; flex-wrap:wrap; }
-.btn-tool {
-  background:#222; color:#ccc; border:1px solid #333; padding:4px 8px;
-  font-size:10px; font-weight:600; border-radius:4px; cursor:pointer; transition:all 0.15s;
-  touch-action: manipulation;
-}
-.btn-tool:hover, .btn-tool:active { background:#333; color:#fff; border-color:#555; }
-.btn-demo { background:#1e3a29; color:#4af08c; border-color:#2a5a3c; }
-.btn-toggle-stats { background:#2a2a38; color:#77a0ff; border-color:#3b3b54; }
+    /* HEADER */
+    .header {
+      background: #141414;
+      border-bottom: 1px solid #282828;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .header-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .header-title span { color: #4a9e6e; }
+    .btn-group { display: flex; gap: 8px; align-items: center; }
+    
+    .btn-tool {
+      background: #222;
+      color: #ccc;
+      border: 1px solid #333;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s ease;
+    }
+    .btn-tool:hover { background: #2a2a2a; color: #fff; border-color: #444; }
 
-/* Month Tabs */
-.month-tabs {
-  display:flex;
-  background:#111;
-  border-bottom:1px solid #222;
-  overflow-x:auto;
-  padding:0 4px;
-  flex-shrink:0;
-  -webkit-overflow-scrolling: touch;
-}
-.month-tab {
-  padding:6px 12px;
-  cursor:pointer;
-  color:#777;
-  font-size:11px;
-  font-weight:700;
-  white-space:nowrap;
-  border-bottom:2px solid transparent;
-  transition:all 0.15s;
-}
-.month-tab.active { color:#fff; border-bottom:2px solid #4a9e6e; background:#181818; }
+    /* NÚT THỐNG KÊ PHONG CÁCH IOS / HYPEROS */
+    .btn-stats-toggle {
+      background: linear-gradient(135deg, rgba(74, 158, 110, 0.3), rgba(52, 120, 246, 0.3));
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: all 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      outline: none;
+    }
+    .btn-stats-toggle:hover {
+      background: linear-gradient(135deg, rgba(74, 158, 110, 0.45), rgba(52, 120, 246, 0.45));
+      transform: scale(1.04);
+      box-shadow: 0 4px 15px rgba(74, 158, 110, 0.35);
+    }
+    .btn-stats-toggle:active {
+      transform: scale(0.95);
+    }
 
-/* Main Layout */
-.main-container { display:flex; flex:1; overflow:hidden; position:relative; }
-.left-panel { flex:1; overflow:auto; background:#0d0d0d; -webkit-overflow-scrolling: touch; }
-.right-panel {
-  width:340px; min-width:300px;
-  background:#121212;
-  border-left:1px solid #222;
-  overflow-y:auto;
-  display:flex;
-  flex-direction:column;
-  transition: all 0.2s ease-in-out;
-  -webkit-overflow-scrolling: touch;
-}
-.right-panel.panel-hidden { display:none !important; }
+    /* BANG TRACKER MAIN LAYOUT */
+    .main-container {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      position: relative;
+    }
+    .tracker-wrapper {
+      flex: 1;
+      overflow: auto;
+      padding: 16px;
+    }
+    .tracker-table {
+      width: 100%;
+      border-collapse: collapse;
+      white-space: nowrap;
+    }
+    .tracker-table th, .tracker-table td {
+      border: 1px solid #222;
+      padding: 8px 10px;
+      text-align: center;
+    }
+    .tracker-table th {
+      background: #181818;
+      color: #aaa;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .tracker-table td.habit-name {
+      text-align: left;
+      font-weight: 600;
+      color: #fff;
+      background: #141414;
+      position: sticky;
+      left: 0;
+      z-index: 5;
+      min-width: 150px;
+    }
+    .cell-check {
+      cursor: pointer;
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      background: #1a1a1a;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      margin: 0 auto;
+    }
+    .cell-check.done {
+      background: #2e7d32;
+      color: #fff;
+      box-shadow: 0 0 8px rgba(46, 125, 50, 0.6);
+    }
 
-/* Table Grid */
-.tracker-table { border-collapse:collapse; min-width:100%; table-layout:fixed; }
-.tracker-table th, .tracker-table td { border:1px solid #222; text-align:center; padding:0; }
+    /* ==========================================
+       MODAL THỐNG KÊ FULLSCREEN (iOS / HyperOS)
+       ========================================== */
+    .stats-modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.35s cubic-bezier(0.32, 0.72, 0, 1),
+                  visibility 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .stats-modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+    .stats-modal-content {
+      width: 92vw;
+      height: 88vh;
+      max-width: 1200px;
+      background: rgba(20, 20, 25, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 24px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      /* Animation nảy lò xo đặc trưng */
+      transform: scale(0.86) translateY(20px);
+      opacity: 0;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.15),
+                  opacity 0.3s ease;
+      overflow-y: auto;
+    }
+    .stats-modal-overlay.active .stats-modal-content {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+    .stats-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .stats-modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .stats-modal-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+    .stats-modal-close:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.1);
+    }
 
-.th-month {
-  background:#1a1a1a; color:#fff; font-weight:700; font-size:11px;
-  padding:4px 6px; width:220px; min-width:220px;
-  position:sticky; left:0; z-index:10; border-right:2px solid #333;
-}
-.th-month-box { display:flex; align-items:center; justify-content:space-between; width:100%; }
-.btn-add-row {
-  background:#1e3a29; color:#4af08c; border:1px solid #2a5a3c;
-  padding:2px 6px; font-size:9px; border-radius:3px; cursor:pointer; font-weight:700;
-}
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      flex: 1;
+    }
+    .stat-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+    .stat-card h4 {
+      color: #aaa;
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+    .chart-box {
+      position: relative;
+      flex: 1;
+      min-height: 220px;
+    }
 
-.th-week { background:#161616; color:#888; font-size:9px; font-weight:700; padding:4px 2px; }
-.th-day-name { background:#141414; color:#666; font-size:8px; font-weight:600; width:28px; min-width:28px; height:20px; }
-.th-day-num { background:#111; color:#777; font-size:9px; width:28px; min-width:28px; height:20px; }
+    /* ==========================================
+       TỐI ƯU XOAY NGANG DÀNH CHO MOBILE
+       ========================================== */
+    .portrait-notice {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #09090b;
+      z-index: 99999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      color: #ffffff;
+    }
+    .portrait-notice-icon {
+      font-size: 52px;
+      margin-bottom: 16px;
+      animation: rotatePhone 2.5s infinite cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    @keyframes rotatePhone {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(-90deg); }
+    }
 
-.habit-name {
-  background:#161616; color:#ddd; font-size:11px; text-align:left;
-  padding:2px 4px; white-space:nowrap; position:sticky; left:0; z-index:4;
-  border-right:2px solid #2e2e2e; height:32px; width:220px; min-width:220px;
-}
-.habit-wrap { display:flex; align-items:center; justify-content:space-between; gap:2px; width:100%; height:100%; }
-.habit-input {
-  background:transparent; border:1px solid transparent; color:#ddd;
-  font-size:10px; width:100%; outline:none; padding:1px 2px; border-radius:2px;
-  text-overflow: ellipsis;
-}
-.habit-input:focus { background:#222; border-color:#4a9e6e; color:#fff; }
-.btn-del-row {
-  background:transparent; border:none; color:#777; cursor:pointer;
-  font-size:11px; padding:0 4px; border-radius:2px;
-}
-
-.cb-cell { width:28px; min-width:28px; height:32px; padding:0; vertical-align:middle; }
-.cb-cell input[type=checkbox] {
-  width:16px; height:16px; cursor:pointer; accent-color:#4a9e6e; margin:0 auto; display:block;
-}
-.cb-done { background:#0f2618 !important; }
-.cb-today { background:#12172b !important; outline:1px inset #3a5ccc; }
-.cb-wknd { background:#141414; }
-.th-wknd { color:#444 !important; background:#121212 !important; }
-
-.wellness-label {
-  background:#141414; color:#888; font-size:9px; text-align:left;
-  padding:3px 6px; position:sticky; left:0; z-index:4;
-  border-right:2px solid #2e2e2e; height:26px; font-weight:600; width:220px; min-width:220px;
-}
-.wellness-cell { height:26px; background:#0f0f0f; }
-.wellness-input {
-  width:100%; height:100%; background:transparent; border:none;
-  color:#aaa; font-size:10px; text-align:center; outline:none;
-}
-.wellness-input:focus { color:#fff; background:#181828; }
-
-/* Right Panel Widgets */
-.rpanel { border-bottom:1px solid #222; padding:10px; }
-.rp-title {
-  font-size:10px; font-weight:700; color:#aaa; text-align:center;
-  letter-spacing:1px; background:#1a1a1a; padding:4px; border-radius:3px; margin-bottom:8px;
-  border:1px solid #252525;
-}
-.chart-box { position:relative; height:115px; width:100%; }
-.chart-box-sm { position:relative; height:90px; width:100%; }
-.chart-box-xs { position:relative; height:80px; width:100%; }
-
-.stats-wrap { display:flex; gap:10px; align-items:center; }
-.stats-col { flex:1; display:flex; flex-direction:column; gap:4px; }
-.stat-row {
-  display:flex; justify-content:space-between; align-items:center;
-  background:#181818; padding:4px 6px; border-radius:3px; border-left:3px solid #444;
-}
-.stat-row.s-goal { border-color:#5e9fe8; }
-.stat-row.s-done { border-color:#4a9e6e; }
-.stat-row.s-left { border-color:#de9255; }
-.stat-label { font-size:9px; color:#777; font-weight:600; }
-.stat-val { font-size:12px; font-weight:700; color:#fff; }
-
-.donut-wrap { position:relative; width:80px; height:80px; flex-shrink:0; }
-.donut-label {
-  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-  font-size:14px; font-weight:800; color:#fff;
-}
-
-.atbl, .t10tbl { width:100%; border-collapse:collapse; font-size:9px; }
-.atbl th, .t10tbl th { background:#181818; color:#777; padding:4px 2px; font-size:8px; border-bottom:1px solid #252525; }
-.atbl td, .t10tbl td { padding:3px 2px; text-align:center; border-bottom:1px solid #1a1a1a; color:#ccc; }
-.mpbar { height:5px; background:#222; border-radius:3px; overflow:hidden; width:45px; margin:0 auto; }
-.mpfill { height:100%; border-radius:3px; }
-.ph { color:#4a9e6e; font-weight:700; }
-.pm { color:#de9255; font-weight:700; }
-.pl { color:#e97366; font-weight:700; }
-
-.rbadge {
-  display:inline-flex; align-items:center; justify-content:center;
-  width:15px; height:15px; border-radius:50%; background:#252525; color:#888; font-size:8px; font-weight:700;
-}
-.r1 { background:#c9a227; color:#000; }
-.r2 { background:#a0a0a0; color:#000; }
-.r3 { background:#cd7f32; color:#000; }
-
-/* Responsive Mobile Rules */
-@media (max-width: 768px) {
-  .main-container { flex-direction: column; }
-  .right-panel {
-    width: 100% !important;
-    min-width: 100% !important;
-    border-left: none;
-    border-top: 2px solid #252525;
-    max-height: 50vh;
-  }
-  .th-month, .habit-name, .wellness-label {
-    width: 140px !important;
-    min-width: 140px !important;
-  }
-  .cb-cell input[type=checkbox] {
-    width: 18px !important;
-    height: 18px !important;
-  }
-}
-
-::-webkit-scrollbar { width:4px; height:4px; }
-::-webkit-scrollbar-track { background:#0d0d0d; }
-::-webkit-scrollbar-thumb { background:#252525; border-radius:2px; }
-</style>
+    @media screen and (max-width: 768px) and (orientation: portrait) {
+      .portrait-notice {
+        display: flex !important;
+      }
+    }
+    @media screen and (max-height: 500px) and (orientation: landscape) {
+      .header { padding: 4px 12px; }
+      .stats-modal-content { height: 94vh; padding: 14px; }
+    }
+  </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-title">🎯 <span>2026</span> TRACKER</div>
-  <div class="btn-group">
-    <button class="btn-tool btn-toggle-stats" onclick="toggleStats()"><span id="statsBtnTxt">📊 Hiện Thống Kê</span></button>
-    <button class="btn-tool btn-demo" onclick="loadDemoData()">🎲 Demo</button>
-    <button class="btn-tool" onclick="exportData()">📥 Xuất JSON</button>
-    <button class="btn-tool" onclick="clearData()">🗑️ Xóa</button>
-    <span id="hdate" style="color:#555;font-size:9px;margin-left:4px"></span>
-  </div>
-</div>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-title">
+      <span>⚡</span> DISCIPLINE TRACKER <span>2026</span>
+    </div>
+    <div class="btn-group">
+      <button class="btn-tool" onclick="resetAllData()">Xóa làm lại</button>
+      <button class="btn-stats-toggle" onclick="openStatsModal()">
+        📊 Thống kê
+      </button>
+    </div>
+  </header>
 
-<div class="month-tabs" id="mtabs"></div>
-
-<div class="main-container">
-  <div class="left-panel" id="left-panel"></div>
-  
-  <div class="right-panel panel-hidden" id="right-panel">
-    <div class="rpanel">
-      <div class="rp-title">📊 DAILY PROGRESS</div>
-      <div class="chart-box"><canvas id="cDaily"></canvas></div>
-    </div>
-    
-    <div class="rpanel">
-      <div class="rp-title">📅 WEEKLY OVERVIEW</div>
-      <div class="chart-box-sm"><canvas id="cWeekly"></canvas></div>
-    </div>
-    
-    <div class="rpanel">
-      <div class="rp-title">🎯 OVERALL STATS</div>
-      <div class="stats-wrap">
-        <div class="stats-col">
-          <div class="stat-row s-goal"><span class="stat-label">Goal</span><span class="stat-val" id="sGoal">0</span></div>
-          <div class="stat-row s-done"><span class="stat-label">Done</span><span class="stat-val" id="sDone">0</span></div>
-          <div class="stat-row s-left"><span class="stat-label">Left</span><span class="stat-val" id="sLeft">0</span></div>
-        </div>
-        <div class="donut-wrap">
-          <canvas id="cDonut" width="80" height="80"></canvas>
-          <div class="donut-label" id="dPct">0%</div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="rpanel">
-      <div class="rp-title">📋 ANALYSIS</div>
-      <table class="atbl">
-        <thead><tr><th style="text-align:left;padding-left:4px">Habit</th><th>Goal</th><th>Done</th><th>Left</th><th>Progress</th><th>%</th></tr></thead>
-        <tbody id="aTbody"></tbody>
+  <!-- Tracker Main Table -->
+  <main class="main-container">
+    <div class="tracker-wrapper">
+      <table class="tracker-table" id="trackerTable">
+        <thead>
+          <tr id="tableHeader">
+            <th style="min-width: 160px; text-align: left;">Mục tiêu / Thói quen</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
       </table>
     </div>
-    
-    <div class="rpanel">
-      <div class="rp-title">💤 OVERALL WELLNESS</div>
-      <div class="chart-box-xs"><canvas id="cWell"></canvas></div>
-    </div>
+  </main>
 
-    <div class="rpanel">
-      <div class="rp-title">🏆 TOP HABITS</div>
-      <table class="t10tbl">
-        <thead><tr><th>#</th><th style="text-align:left">Habit</th><th>%</th></tr></thead>
-        <tbody id="t10Body"></tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<script>
-const YEAR = 2026;
-const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-const DAYS_SHORT = ['Su','Mo','Tu','We','Th','Fr','Sa'];
-
-const DEFAULT_HABITS = [
-  { id: 'h1', name: '⏰ Dậy 06:00 AM' },
-  { id: 'h2', name: '🇬🇧 Học Tiếng Anh (3.5h)' },
-  { id: 'h3', name: '📖 Học Bài trên lớp (2h)' },
-  { id: 'h4', name: '💻 Học Chuyên ngành CS' },
-  { id: 'h5', name: '🏋️ Tập Gym (1h)' },
-  { id: 'h6', name: '💤 Ngủ trưa (30p-1h)' },
-  { id: 'h7', name: '📵 MXH (Tối đa 2h)' },
-  { id: 'h8', name: '😴 Ngủ 23:00' }
-];
-
-const SK = 'ht2026_dynamic_v3';
-let M = new Date().getFullYear() === YEAR ? new Date().getMonth() : 9;
-let DATA = {};
-let HABITS = [];
-
-try { 
-  DATA = JSON.parse(localStorage.getItem(SK) || '{}'); 
-  HABITS = DATA.habits && DATA.habits.length > 0 ? DATA.habits : [...DEFAULT_HABITS];
-} catch(e){
-  HABITS = [...DEFAULT_HABITS];
-}
-
-function save(){ 
-  DATA.habits = HABITS;
-  localStorage.setItem(SK, JSON.stringify(DATA)); 
-}
-
-function daysInMonth(m){ return new Date(YEAR, m+1, 0).getDate(); }
-function firstDow(m){ return new Date(YEAR, m, 1).getDay(); }
-function dayDow(m,d){ return new Date(YEAR, m, d).getDay(); }
-function weekNum(m,d){ return Math.ceil((d + firstDow(m)) / 7); }
-function cbKey(m,d,hid){ return `${YEAR}-${m}-${d}-${hid}`; }
-function moodKey(m,d){ return `md-${YEAR}-${m}-${d}`; }
-function sleepKey(m,d){ return `sl-${YEAR}-${m}-${d}`; }
-
-// Render Month Tabs
-const mtabs = document.getElementById('mtabs');
-MONTHS.forEach((name,i)=>{
-  const t = document.createElement('div');
-  t.className = 'month-tab' + (i === M ? ' active' : '');
-  t.dataset.m = i;
-  t.textContent = name;
-  t.onclick = () => switchMonth(i);
-  mtabs.appendChild(t);
-});
-
-function toggleStats(){
-  const rp = document.getElementById('right-panel');
-  const txt = document.getElementById('statsBtnTxt');
-  rp.classList.toggle('panel-hidden');
-  txt.textContent = rp.classList.contains('panel-hidden') ? '📊 Hiện Thống Kê' : '❌ Ẩn Thống Kê';
-  if(!rp.classList.contains('panel-hidden')){
-    setTimeout(() => { cD.resize(); cW.resize(); cDo.resize(); cWl.resize(); }, 100);
-  }
-}
-
-function addHabit(){
-  if(HABITS.length >= 12){ alert('Tối đa 12 hàng!'); return; }
-  HABITS.push({ id: 'h_' + Date.now(), name: `📌 Thói quen ${HABITS.length + 1}` });
-  save(); renderTable(); updateAll();
-}
-
-function deleteHabit(hid){
-  if(HABITS.length <= 1){ alert('Giữ ít nhất 1 hàng!'); return; }
-  HABITS = HABITS.filter(h => h.id !== hid);
-  Object.keys(DATA).forEach(k => { if(k.endsWith(hid)) delete DATA[k]; });
-  save(); renderTable(); updateAll();
-}
-
-function renderTable(){
-  const days = daysInMonth(M);
-  const today = new Date();
-  const isCurMon = (today.getFullYear() === YEAR && today.getMonth() === M);
-  const todayD = today.getDate();
-
-  const wkGroups = {};
-  for(let d=1; d<=days; d++){
-    const wk = weekNum(M,d);
-    if(!wkGroups[wk]) wkGroups[wk] = [];
-    wkGroups[wk].push(d);
-  }
-  const wkNums = Object.keys(wkGroups).map(Number).sort((a,b)=>a-b);
-
-  let h = '<table class="tracker-table"><thead>';
-  const isMax = HABITS.length >= 12;
-  h += `<tr><th class="th-month" rowspan="3">
-    <div class="th-month-box">
-      <span>${MONTHS[M]} (${HABITS.length}/12)</span>
-      <button class="btn-add-row" onclick="addHabit()" ${isMax ? 'disabled' : ''}>➕ Thêm</button>
-    </div>
-  </th>`;
-  
-  wkNums.forEach(wk => { h += `<th class="th-week" colspan="${wkGroups[wk].length}">W${wk}</th>`; });
-  h += '</tr><tr>';
-
-  for(let d=1; d<=days; d++){
-    const dow = dayDow(M,d);
-    const wk = (dow===0 || dow===6) ? ' th-wknd' : '';
-    h += `<th class="th-day-name${wk}">${DAYS_SHORT[dow]}</th>`;
-  }
-  h += '</tr><tr>';
-
-  for(let d=1; d<=days; d++){
-    const dow = dayDow(M,d);
-    const wk = (dow===0 || dow===6) ? ' th-wknd' : '';
-    const todayCls = (isCurMon && d === todayD) ? ' style="color:#7799ff;font-weight:800"' : '';
-    h += `<th class="th-day-num${wk}"${todayCls}>${d}</th>`;
-  }
-  h += '</tr></thead><tbody>';
-
-  HABITS.forEach(hb => {
-    h += `<tr><td class="habit-name">
-      <div class="habit-wrap">
-        <input type="text" class="habit-input" value="${hb.name}" data-hid="${hb.id}">
-        <button class="btn-del-row" onclick="deleteHabit('${hb.id}')">✕</button>
+  <!-- Modal Thống kê Fullscreen phong cách iOS / HyperOS -->
+  <div id="statsModal" class="stats-modal-overlay" onclick="closeStatsModalOnOuter(event)">
+    <div class="stats-modal-content">
+      <div class="stats-modal-header">
+        <div class="stats-modal-title">
+          📊 <span>Thống Kê Tổng Quan Hiệu Suất</span>
+        </div>
+        <button class="stats-modal-close" onclick="closeStatsModal()">✕</button>
       </div>
-    </td>`;
-    for(let d=1; d<=days; d++){
-      const key = cbKey(M,d,hb.id);
-      const chk = DATA[key] ? 'checked' : '';
-      const dow = dayDow(M,d);
-      const isWknd = (dow===0 || dow===6);
-      const isToday = (isCurMon && d === todayD);
-      const isDone = !!DATA[key];
-      let cls = 'cb-cell';
-      if(isToday) cls += ' cb-today';
-      else if(isDone) cls += ' cb-done';
-      else if(isWknd) cls += ' cb-wknd';
       
-      h += `<td class="${cls}"><input type="checkbox" data-k="${key}" ${chk}></td>`;
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h4>🎯 Tỷ lệ hoàn thành theo ngày (%)</h4>
+          <div class="chart-box">
+            <canvas id="dailyChart"></canvas>
+          </div>
+        </div>
+        <div class="stat-card">
+          <h4>🔥 Tiến độ từng thói quen (%)</h4>
+          <div class="chart-box">
+            <canvas id="habitChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Màn hình Cảnh báo xoay ngang điện thoại -->
+  <div class="portrait-notice">
+    <div class="portrait-notice-icon">📱</div>
+    <h3 style="margin-bottom: 8px; font-size: 18px;">Vui lòng xoay ngang điện thoại</h3>
+    <p style="color: #a1a1aa; font-size: 13px; max-width: 290px; line-height: 1.5;">
+      Ứng dụng được tối ưu giao diện nằm ngang để theo dõi toàn bộ chuỗi ngày rèn luyện một cách trực quan nhất.
+    </p>
+  </div>
+
+  <script>
+    // Danh sách thói quen mẫu
+    const habits = [
+      "Dậy sớm 5:30 AM",
+      "Tập thể thao 30p",
+      "Đọc sách 20 trang",
+      "Học Code / Kỹ năng",
+      "Thiền & Chill 10p",
+      "Không thức khuya"
+    ];
+    
+    const totalDays = 31;
+    let trackerData = JSON.parse(localStorage.getItem('discipline_data_2026')) || {};
+
+    // Khởi tạo bảng
+    function initTracker() {
+      const tableHeader = document.getElementById('tableHeader');
+      const tableBody = document.getElementById('tableBody');
+
+      tableHeader.innerHTML = '<th style="min-width: 160px; text-align: left;">Mục tiêu / Thói quen</th>';
+      tableBody.innerHTML = '';
+
+      for (let d = 1; d <= totalDays; d++) {
+        const th = document.createElement('th');
+        th.textContent = d < 10 ? '0' + d : d;
+        tableHeader.appendChild(th);
+      }
+
+      habits.forEach((habit, hIdx) => {
+        const tr = document.createElement('tr');
+        
+        const tdHabit = document.createElement('td');
+        tdHabit.className = 'habit-name';
+        tdHabit.textContent = habit;
+        tr.appendChild(tdHabit);
+
+        for (let d = 1; d <= totalDays; d++) {
+          const td = document.createElement('td');
+          const key = `${hIdx}_${d}`;
+          const isChecked = trackerData[key] || false;
+
+          const checkBtn = document.createElement('div');
+          checkBtn.className = 'cell-check' + (isChecked ? ' done' : '');
+          checkBtn.textContent = isChecked ? '✓' : '';
+          checkBtn.onclick = () => toggleCheck(key, checkBtn);
+
+          td.appendChild(checkBtn);
+          tr.appendChild(td);
+        }
+        tableBody.appendChild(tr);
+      });
     }
-    h += '</tr>';
-  });
 
-  // Mood row
-  h += '<tr><td class="wellness-label">😊 Mood (1-5)</td>';
-  for(let d=1; d<=days; d++){
-    const key = moodKey(M,d);
-    const v = DATA[key] != null ? DATA[key] : '';
-    h += `<td class="wellness-cell"><input class="wellness-input" type="number" min="1" max="5" value="${v}" data-wk="${key}"></td>`;
-  }
-  h += '</tr>';
+    function toggleCheck(key, element) {
+      trackerData[key] = !trackerData[key];
+      if (trackerData[key]) {
+        element.classList.add('done');
+        element.textContent = '✓';
+      } else {
+        element.classList.remove('done');
+        element.textContent = '';
+      }
+      localStorage.setItem('discipline_data_2026', JSON.stringify(trackerData));
+    }
 
-  // Sleep row
-  h += '<tr><td class="wellness-label">💤 Sleep (h)</td>';
-  for(let d=1; d<=days; d++){
-    const key = sleepKey(M,d);
-    const v = DATA[key] != null ? DATA[key] : '';
-    h += `<td class="wellness-cell"><input class="wellness-input" type="number" min="0" max="24" step="0.5" value="${v}" data-wk="${key}"></td>`;
-  }
-  h += '</tr></tbody></table>';
+    function resetAllData() {
+      if (confirm("Bạn có chắc chắn muốn làm mới dữ liệu?")) {
+        trackerData = {};
+        localStorage.removeItem('discipline_data_2026');
+        initTracker();
+      }
+    }
 
-  document.getElementById('left-panel').innerHTML = h;
+    /* MODAL & CHART LOGIC */
+    let dailyChartInstance = null;
+    let habitChartInstance = null;
 
-  document.querySelectorAll('[data-k]').forEach(el => {
-    el.addEventListener('change', function(){
-      DATA[this.dataset.k] = this.checked;
-      save();
-      const td = this.closest('td');
-      if(this.checked){ td.classList.add('cb-done'); td.classList.remove('cb-wknd'); }
-      else { td.classList.remove('cb-done'); if(td.classList.contains('cb-wknd')) td.classList.add('cb-wknd'); }
-      updateAll();
+    function openStatsModal() {
+      const modal = document.getElementById('statsModal');
+      modal.classList.add('active');
+      renderCharts();
+
+      if (screen.orientation && screen.orientation.lock) {
+        screen.orientation.lock('landscape').catch(() => {});
+      }
+    }
+
+    function closeStatsModal() {
+      const modal = document.getElementById('statsModal');
+      modal.classList.remove('active');
+    }
+
+    function closeStatsModalOnOuter(e) {
+      if (e.target.id === 'statsModal') closeStatsModal();
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeStatsModal();
     });
-  });
 
-  document.querySelectorAll('.habit-input').forEach(el => {
-    el.addEventListener('input', function(){
-      const hb = HABITS.find(h => h.id === this.dataset.hid);
-      if(hb){ hb.name = this.value || 'Thói quen mới'; save(); updateAnalysis(computeStats()); updateTop10(computeStats()); }
-    });
-  });
+    function renderCharts() {
+      const dailyRates = [];
+      const labelsDay = [];
 
-  document.querySelectorAll('[data-wk]').forEach(el => {
-    el.addEventListener('change', function(){
-      DATA[this.dataset.wk] = this.value !== '' ? parseFloat(this.value) : null;
-      save(); refreshWell();
-    });
-  });
-}
+      for (let d = 1; d <= totalDays; d++) {
+        labelsDay.push(`N${d}`);
+        let doneCount = 0;
+        habits.forEach((_, hIdx) => {
+          if (trackerData[`${hIdx}_${d}`]) doneCount++;
+        });
+        dailyRates.push(Math.round((doneCount / habits.length) * 100));
+      }
 
-function computeStats(){
-  const days = daysInMonth(M);
-  const dailyPct = [];
-  const hLen = HABITS.length || 1;
-  
-  for(let d=1; d<=days; d++){
-    let done = 0, filled = false;
-    HABITS.forEach(h => { 
-      if(DATA[cbKey(M,d,h.id)] !== undefined) filled = true;
-      if(DATA[cbKey(M,d,h.id)]) done++; 
-    });
-    dailyPct.push(filled || done > 0 ? Math.round((done / hLen) * 100) : 0);
-  }
+      const habitRates = habits.map((_, hIdx) => {
+        let doneCount = 0;
+        for (let d = 1; d <= totalDays; d++) {
+          if (trackerData[`${hIdx}_${d}`]) doneCount++;
+        }
+        return Math.round((doneCount / totalDays) * 100);
+      });
 
-  const numWeeks = weekNum(M, days);
-  const weeklyPct = [];
-  for(let wk=1; wk<=numWeeks; wk++){
-    const vals = [];
-    for(let d=1; d<=days; d++){ if(weekNum(M,d) === wk) vals.push(dailyPct[d-1]); }
-    weeklyPct.push(vals.length ? Math.round(vals.reduce((a,b)=>a+b,0) / vals.length) : 0);
-  }
+      // Biểu đồ ngày
+      const ctxDaily = document.getElementById('dailyChart').getContext('2d');
+      if (dailyChartInstance) dailyChartInstance.destroy();
+      dailyChartInstance = new Chart(ctxDaily, {
+        type: 'line',
+        data: {
+          labels: labelsDay,
+          datasets: [{
+            label: '% Hoàn thành',
+            data: dailyRates,
+            borderColor: '#4a9e6e',
+            backgroundColor: 'rgba(74, 158, 110, 0.18)',
+            fill: true,
+            tension: 0.4,
+            pointRadius: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { min: 0, max: 100, grid: { color: '#222' }, ticks: { color: '#888' } },
+            x: { grid: { display: false }, ticks: { color: '#888' } }
+          },
+          plugins: { legend: { display: false } }
+        }
+      });
 
-  const habitStats = HABITS.map(h => {
-    let actual = 0;
-    for(let d=1; d<=days; d++){ if(DATA[cbKey(M,d,h.id)]) actual++; }
-    const goal = days;
-    return { name: h.name, goal, actual, left: Math.max(0, goal - actual), pct: Math.round((actual / goal) * 100) };
-  });
+      // Biểu đồ thói quen
+      const ctxHabit = document.getElementById('habitChart').getContext('2d');
+      if (habitChartInstance) habitChartInstance.destroy();
+      habitChartInstance = new Chart(ctxHabit, {
+        type: 'bar',
+        data: {
+          labels: habits,
+          datasets: [{
+            label: '% Hoàn thành',
+            data: habitRates,
+            backgroundColor: 'rgba(52, 120, 246, 0.75)',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          indexAxis: 'y',
+          scales: {
+            x: { min: 0, max: 100, grid: { color: '#222' }, ticks: { color: '#888' } },
+            y: { grid: { display: false }, ticks: { color: '#aaa' } }
+          },
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
 
-  const totalGoal = days * hLen;
-  const totalDone = habitStats.reduce((s,h) => s + h.actual, 0);
-
-  const moodArr = [], sleepArr = [], lbls = [];
-  for(let d=1; d<=days; d++){
-    lbls.push(d);
-    moodArr.push(DATA[moodKey(M,d)] != null ? DATA[moodKey(M,d)] : null);
-    sleepArr.push(DATA[sleepKey(M,d)] != null ? DATA[sleepKey(M,d)] : null);
-  }
-
-  return { dailyPct, weeklyPct, habitStats, totalGoal, totalDone, days, moodArr, sleepArr, lbls, numWeeks };
-}
-
-Chart.defaults.color = '#666';
-Chart.defaults.borderColor = 'rgba(255,255,255,0.05)';
-let cD, cW, cDo, cWl;
-
-function initCharts(){
-  const s = computeStats();
-  cD = new Chart(document.getElementById('cDaily'), {
-    type:'bar',
-    data:{ labels: Array.from({length:s.days}, (_,i) => i+1), datasets:[{ data: s.dailyPct, backgroundColor: s.dailyPct.map(v => v >= 80 ? '#4a9e6e' : v >= 50 ? '#de9255' : '#e97366'), borderRadius:2 }] },
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false} }, scales:{ x:{ ticks:{font:{size:7}, color:'#555'}, grid:{display:false} }, y:{ min:0, max:100, ticks:{font:{size:7}, color:'#555'}, grid:{color:'rgba(255,255,255,0.03)'} } } }
-  });
-
-  cW = new Chart(document.getElementById('cWeekly'), {
-    type:'bar',
-    data:{ labels: Array.from({length:s.numWeeks}, (_,i) => 'W'+(i+1)), datasets:[{ data: s.weeklyPct, backgroundColor:'#2e2e2e', borderRadius:3 }] },
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false} }, scales:{ x:{ ticks:{font:{size:8}, color:'#666'}, grid:{display:false} }, y:{ min:0, max:100, ticks:{font:{size:7}, color:'#555'}, grid:{color:'rgba(255,255,255,0.03)'} } } }
-  });
-
-  const pct = s.totalGoal > 0 ? Math.round((s.totalDone / s.totalGoal) * 100) : 0;
-  cDo = new Chart(document.getElementById('cDonut'), {
-    type:'doughnut',
-    data:{ datasets:[{ data:[pct, 100-pct], backgroundColor:['#4a9e6e','#1e1e1e'], borderWidth:0 }] },
-    options:{ responsive:false, cutout:'70%', plugins:{ legend:{display:false}, tooltip:{enabled:false} } }
-  });
-
-  cWl = new Chart(document.getElementById('cWell'), {
-    type:'line',
-    data:{ labels: s.lbls, datasets:[
-      { label:'Mood', data:s.moodArr, borderColor:'#4a9e6e', pointRadius:1, tension:0.3, spanGaps:true },
-      { label:'Sleep', data:s.sleepArr, borderColor:'#5e9fe8', pointRadius:1, tension:0.3, spanGaps:true }
-    ]},
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:true, position:'bottom', labels:{font:{size:8}, boxWidth:8} } }, scales:{ x:{ ticks:{font:{size:7}, color:'#555'}, grid:{display:false} }, y:{ ticks:{font:{size:7}, color:'#555'}, grid:{color:'rgba(255,255,255,0.03)'} } } }
-  });
-
-  updateStatUI(s); updateAnalysis(s); updateTop10(s);
-}
-
-function updateAll(){
-  const s = computeStats();
-  cD.data.datasets[0].data = s.dailyPct;
-  cD.data.datasets[0].backgroundColor = s.dailyPct.map(v => v >= 80 ? '#4a9e6e' : v >= 50 ? '#de9255' : '#e97366');
-  cD.update();
-  cW.data.datasets[0].data = s.weeklyPct;
-  cW.data.labels = Array.from({length:s.numWeeks}, (_,i) => 'W'+(i+1));
-  cW.update();
-  const pct = s.totalGoal > 0 ? Math.round((s.totalDone / s.totalGoal) * 100) : 0;
-  cDo.data.datasets[0].data = [pct, 100-pct];
-  cDo.update();
-  updateStatUI(s); updateAnalysis(s); updateTop10(s); refreshWell();
-}
-
-function refreshWell(){
-  const s = computeStats();
-  cWl.data.labels = s.lbls;
-  cWl.data.datasets[0].data = s.moodArr;
-  cWl.data.datasets[1].data = s.sleepArr;
-  cWl.update();
-}
-
-function updateStatUI(s){
-  document.getElementById('sGoal').textContent = s.totalGoal;
-  document.getElementById('sDone').textContent = s.totalDone;
-  document.getElementById('sLeft').textContent = s.totalGoal - s.totalDone;
-  const pct = s.totalGoal > 0 ? Math.round((s.totalDone / s.totalGoal) * 100) : 0;
-  document.getElementById('dPct').textContent = pct + '%';
-}
-
-function updateAnalysis(s){
-  document.getElementById('aTbody').innerHTML = s.habitStats.map(h => {
-    const c = h.pct >= 80 ? 'ph' : h.pct >= 50 ? 'pm' : 'pl';
-    const bar = h.pct >= 80 ? '#4a9e6e' : h.pct >= 50 ? '#de9255' : '#e97366';
-    return `<tr>
-      <td style="text-align:left;padding-left:4px">${h.name}</td>
-      <td>${h.goal}</td><td>${h.actual}</td><td>${h.left}</td>
-      <td><div class="mpbar"><div class="mpfill" style="width:${Math.min(h.pct,100)}%;background:${bar}"></div></div></td>
-      <td class="${c}">${h.pct}%</td>
-    </tr>`;
-  }).join('');
-}
-
-function updateTop10(s){
-  const sorted = [...s.habitStats].sort((a,b) => b.pct - a.pct);
-  document.getElementById('t10Body').innerHTML = sorted.map((h,i) => {
-    const rc = i===0 ? 'r1' : i===1 ? 'r2' : i===2 ? 'r3' : '';
-    const pc = h.pct >= 80 ? 'ph' : h.pct >= 50 ? 'pm' : 'pl';
-    return `<tr>
-      <td><span class="rbadge ${rc}">${i+1}</span></td>
-      <td style="text-align:left">${h.name}</td>
-      <td class="${pc}">${h.pct}%</td>
-    </tr>`;
-  }).join('');
-}
-
-function switchMonth(m){
-  M = m;
-  document.querySelectorAll('.month-tab').forEach(t => t.classList.toggle('active', parseInt(t.dataset.m) === m));
-  renderTable(); updateAll();
-}
-
-function loadDemoData(){
-  const days = daysInMonth(M);
-  HABITS.forEach((h, hIdx) => {
-    for(let d=1; d<=days; d++){ DATA[cbKey(M,d,h.id)] = Math.random() < (hIdx < 4 ? 0.85 : 0.70); }
-  });
-  for(let d=1; d<=days; d++){ DATA[moodKey(M,d)] = Math.floor(Math.random() * 2) + 4; DATA[sleepKey(M,d)] = 7; }
-  save(); renderTable(); updateAll();
-}
-
-function clearData(){
-  if(confirm('Xóa dữ liệu?')){ DATA = {}; HABITS = [...DEFAULT_HABITS]; save(); renderTable(); updateAll(); }
-}
-
-function exportData(){
-  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(DATA, null, 2));
-  const dlAnchor = document.createElement('a');
-  dlAnchor.setAttribute("href", dataStr);
-  dlAnchor.setAttribute("download", `Personal_Discipline_2026_M${M+1}.json`);
-  document.body.appendChild(dlAnchor);
-  dlAnchor.click();
-  dlAnchor.remove();
-}
-
-document.getElementById('hdate').textContent = new Date().toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric', year:'numeric'});
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js');
-}
-
-renderTable();
-initCharts();
-</script>
+    initTracker();
+  </script>
 </body>
 </html>
