@@ -34,66 +34,99 @@ body {
 
 /* Header */
 .header {
-  background:#141414; border-bottom:1px solid #282828; padding:6px 12px;
+  background:#141414; border-bottom:1px solid #222; padding:6px 12px;
   display:flex; align-items:center; justify-content:space-between; flex-shrink:0; gap:6px; flex-wrap:wrap;
 }
 .header-title { font-size:13px; font-weight:700; color:#fff; letter-spacing:0.5px; display:flex; align-items:center; gap:6px; }
 .header-title span { color:#4a9e6e; }
 
 .btn-group { display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
-.btn-tool { background:#222; color:#ccc; border:1px solid #333; padding:5px 10px; font-size:11px; font-weight:600; border-radius:5px; cursor:pointer; transition:all 0.2s; }
-.btn-tool:hover { background:#333; color:#fff; }
-.btn-month-select { background:#1e2a38; color:#5e9fe8; border-color:#2c4361; font-weight:700; }
-.btn-month-select:hover { background:#283a50; color:#82b7f5; }
-.btn-undo { background:#3d2314; color:#f0a04b; border-color:#63391f; display:none; }
+.btn-tool { background:#1e1e1e; color:#ccc; border:1px solid #2c2c2c; padding:5px 10px; font-size:11px; font-weight:600; border-radius:6px; cursor:pointer; transition:all 0.2s; }
+.btn-tool:hover { background:#2a2a2a; color:#fff; }
+.btn-month-select { background:#1a2736; color:#5e9fe8; border-color:#2a3f5a; font-weight:700; }
+.btn-month-select:hover { background:#24364a; color:#82b7f5; }
+.btn-undo { background:#331d10; color:#f0a04b; border-color:#522e1a; display:none; }
 .btn-undo.active { display:inline-block; }
-.btn-add { background:#1f3322; color:#52c472; border-color:#2e5434; }
-.btn-noti { background:#2a2a1e; color:#ffd700; border-color:#554d00; }
-.btn-demo { background:#1e3a29; color:#4af08c; border-color:#2a5a3c; }
+.btn-add { background:#192e1d; color:#52c472; border-color:#264a2e; }
+.btn-noti { background:#262619; color:#ffd700; border-color:#4d4700; }
+.btn-demo { background:#162e20; color:#4af08c; border-color:#214a30; }
 
 /* Main Layout */
 .main-container { display:flex; flex:1; overflow:hidden; position:relative; }
 .left-panel { flex:1; overflow:auto; background:#0d0d0d; }
 
 .right-panel {
-  width:320px; min-width:280px; background:#121212; border-left:1px solid #222;
+  width:320px; min-width:280px; background:#121212; border-left:1px solid #1f1f1f;
   overflow-y:auto; display:flex; flex-direction:column; transition: all 0.35s ease;
 }
 .right-panel.panel-hidden { opacity: 0 !important; width: 0 !important; min-width: 0 !important; padding: 0 !important; border: none !important; pointer-events: none !important; }
 
-/* Table Grid */
+/* Table Grid - Tinh chỉnh đường kẻ mềm mại */
 .tracker-table { border-collapse:collapse; min-width:100%; table-layout:fixed; }
-.tracker-table th, .tracker-table td { border:1px solid #222; text-align:center; padding:0; }
-.th-month { background:#1a1a1a; color:#4a9e6e; font-weight:800; font-size:12px; padding:6px; width:220px; position:sticky; left:0; z-index:10; border-right:2px solid #333; }
-.th-day-name { background:#141414; color:#666; font-size:8px; font-weight:600; width:28px; height:20px; }
-.th-day-num { background:#111; color:#777; font-size:9px; width:28px; height:20px; }
+.tracker-table th, .tracker-table td { border:1px solid #1c1c1c; text-align:center; padding:0; }
+.th-month { background:#161616; color:#4a9e6e; font-weight:800; font-size:12px; padding:6px; width:220px; position:sticky; left:0; z-index:10; border-right:2px solid #2a2a2a; }
+.th-day-name { background:#121212; color:#555; font-size:8px; font-weight:600; width:28px; height:20px; }
+.th-day-num { background:#0f0f0f; color:#777; font-size:9px; width:28px; height:20px; }
 
 .habit-name {
-  background:#161616; color:#ddd; font-size:11px; text-align:left; padding:2px 4px;
-  position:sticky; left:0; z-index:4; border-right:2px solid #2e2e2e; height:36px; width:220px;
-  display:flex; align-items:center; gap:3px;
+  background:#141414; color:#ddd; font-size:11px; text-align:left; padding:2px 5px;
+  position:sticky; left:0; z-index:4; border-right:2px solid #282828; height:36px; width:220px;
+  display:flex; align-items:center; gap:4px;
 }
-.habit-input { background:transparent; border:1px solid transparent; color:#ddd; font-size:10px; flex:1; outline:none; padding:1px 2px; }
-.habit-input:focus { border-color:#4a9e6e; background:#1e1e1e; border-radius:3px; }
+.habit-input { background:transparent; border:1px solid transparent; color:#ddd; font-size:10px; flex:1; outline:none; padding:2px 4px; border-radius:4px; }
+.habit-input:focus { border-color:#4a9e6e; background:#1e1e1e; }
 
-/* Nút sắp xếp & xóa trong ô nhiệm vụ */
-.btn-order { background:#252525; color:#888; border:none; border-radius:3px; width:16px; height:16px; font-size:9px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+/* Nút sắp xếp & xóa */
+.btn-order { background:#222; color:#777; border:none; border-radius:3px; width:16px; height:16px; font-size:9px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .btn-order:hover { background:#333; color:#fff; }
-.btn-del-task { background:transparent; color:#666; border:none; width:18px; height:18px; font-size:10px; cursor:pointer; border-radius:3px; }
-.btn-del-task:hover { color:#ff5555; background:#2a1818; }
+.btn-del-task { background:transparent; color:#555; border:none; width:18px; height:18px; font-size:10px; cursor:pointer; border-radius:3px; }
+.btn-del-task:hover { color:#ff5555; background:#221313; }
 
-.cb-cell { width:28px; height:36px; padding:0; vertical-align:middle; }
-.cb-cell input[type=checkbox] { width:16px; height:16px; cursor:pointer; accent-color:#4a9e6e; margin:0 auto; display:block; }
-.cb-done { background:#0f2618 !important; }
-.cb-today { background:#12172b !important; outline:1px inset #3a5ccc; }
+/* CHECKBOX TỰ THIẾT KẾ BO TRÒN - KHÔNG DÙNG MẶC ĐỊNH */
+.cb-cell { width:28px; height:36px; padding:0; vertical-align:middle; transition: background 0.15s ease; }
+.cb-cell.cb-today { background:#10172a !important; }
+.cb-cell.cb-done { background:#0b1d12 !important; }
+
+.cb-cell input[type=checkbox] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 17px;
+  height: 17px;
+  border-radius: 5px;
+  border: 1px solid #333;
+  background: #161616;
+  cursor: pointer;
+  margin: 0 auto;
+  display: block;
+  position: relative;
+  transition: all 0.15s ease;
+}
+.cb-cell input[type=checkbox]:hover {
+  border-color: #4a9e6e;
+}
+.cb-cell input[type=checkbox]:checked {
+  background: #4a9e6e;
+  border-color: #4a9e6e;
+  box-shadow: 0 0 6px rgba(74, 158, 110, 0.4);
+}
+.cb-cell input[type=checkbox]:checked::after {
+  content: '✓';
+  position: absolute;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 900;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
 /* Widgets Right Panel */
-.rpanel { border-bottom:1px solid #222; padding:10px; }
-.rp-title { font-size:10px; font-weight:700; color:#aaa; text-align:center; background:#1a1a1a; padding:4px; border-radius:3px; margin-bottom:8px; border:1px solid #252525; }
-.chart-box { position:relative; height:100px; width:100%; }
+.rpanel { border-bottom:1px solid #1f1f1f; padding:10px; }
+.rp-title { font-size:10px; font-weight:700; color:#888; text-align:center; background:#161616; padding:4px; border-radius:4px; margin-bottom:8px; border:1px solid #222; }
+.chart-box { position:relative; height:105px; width:100%; }
 .stats-wrap { display:flex; gap:10px; align-items:center; }
 .stats-col { flex:1; display:flex; flex-direction:column; gap:4px; }
-.stat-row { display:flex; justify-content:space-between; align-items:center; background:#181818; padding:4px 6px; border-radius:3px; border-left:3px solid #444; }
+.stat-row { display:flex; justify-content:space-between; align-items:center; background:#161616; padding:4px 8px; border-radius:4px; border-left:3px solid #444; }
 .stat-row.s-goal { border-color:#5e9fe8; }
 .stat-row.s-done { border-color:#4a9e6e; }
 .stat-row.s-left { border-color:#de9255; }
@@ -111,7 +144,7 @@ body {
 .modal-overlay.active { display: flex; }
 
 .year-box {
-  background: #141414; border: 1px solid #2e2e2e; border-radius: 12px;
+  background: #141414; border: 1px solid #2c2c2c; border-radius: 12px;
   width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto;
   padding: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
   display: flex; flex-direction: column; gap: 14px;
@@ -133,15 +166,15 @@ body {
 }
 
 .month-card {
-  background: #1a1a1a; border: 1px solid #282828; border-radius: 10px;
+  background: #181818; border: 1px solid #262626; border-radius: 10px;
   padding: 12px 8px; display: flex; flex-direction: column; align-items: center;
   gap: 8px; cursor: pointer; transition: all 0.2s ease;
 }
 .month-card:hover {
-  border-color: #4a9e6e; background: #222; transform: translateY(-2px);
+  border-color: #4a9e6e; background: #202020; transform: translateY(-2px);
 }
 .month-card.active {
-  border-color: #4a9e6e; background: #1b2920; box-shadow: 0 0 12px rgba(74, 158, 110, 0.3);
+  border-color: #4a9e6e; background: #16261b; box-shadow: 0 0 12px rgba(74, 158, 110, 0.3);
 }
 .month-card-name { font-size: 12px; font-weight: 700; color: #ddd; }
 
@@ -152,11 +185,11 @@ body {
 }
 .ring-inner {
   position: absolute; width: 44px; height: 44px; border-radius: 50%;
-  background: #1a1a1a; display: flex; flex-direction: column;
+  background: #181818; display: flex; flex-direction: column;
   align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #fff;
 }
-.month-card:hover .ring-inner { background: #222; }
-.month-card.active .ring-inner { background: #1b2920; }
+.month-card:hover .ring-inner { background: #202020; }
+.month-card.active .ring-inner { background: #16261b; }
 .ring-subtext { font-size: 8px; color: #888; font-weight: 600; margin-top: -2px; }
 </style>
 </head>
@@ -247,7 +280,7 @@ const SK = 'ht2026_dynamic_v3';
 let M = new Date().getFullYear() === YEAR ? new Date().getMonth() : 9;
 let DATA = {};
 let HABITS = [];
-let undoStack = []; // Quản lý lịch sử để hoàn tác
+let undoStack = [];
 let swRegistration = null;
 
 try { 
@@ -269,7 +302,7 @@ function pushUndoState(description) {
     data: JSON.parse(JSON.stringify(DATA)),
     desc: description
   });
-  if (undoStack.length > 20) undoStack.shift(); // Giữ tối đa 20 bước hoàn tác
+  if (undoStack.length > 20) undoStack.shift();
   updateUndoButton();
 }
 
@@ -303,7 +336,6 @@ function daysInMonth(m){ return new Date(YEAR, m+1, 0).getDate(); }
 function dayDow(m,d){ return new Date(YEAR, m, d).getDay(); }
 function cbKey(m,d,hid){ return `${YEAR}-${m}-${d}-${hid}`; }
 
-// Tính phần trăm hoàn thành của tháng
 function computeMonthPct(m) {
   const days = daysInMonth(m);
   const hLen = HABITS.length || 1;
@@ -318,7 +350,6 @@ function computeMonthPct(m) {
   return totalPossible > 0 ? Math.round((doneCount / totalPossible) * 100) : 0;
 }
 
-// Bảng Tổng Quan Năm 2026
 function openYearModal() {
   const grid = document.getElementById('monthsGrid');
   grid.innerHTML = '';
@@ -331,7 +362,7 @@ function openYearModal() {
 
     card.innerHTML = `
       <div class="month-card-name">${name}</div>
-      <div class="ring-container" style="background: conic-gradient(#4a9e6e ${pct}%, #2e2e2e 0deg);">
+      <div class="ring-container" style="background: conic-gradient(#4a9e6e ${pct}%, #282828 0deg);">
         <div class="ring-inner">
           ${pct}%
           <span class="ring-subtext">XONG</span>
@@ -360,7 +391,6 @@ function updateHeaderButton() {
   document.getElementById('curMonthBtn').textContent = `📅 ${MONTHS[M]} / 2026 ▾`;
 }
 
-// Quản lý Nhiệm vụ: Di chuyển & Xóa
 function moveHabit(idx, dir) {
   const newIdx = idx + dir;
   if (newIdx < 0 || newIdx >= HABITS.length) return;
@@ -398,7 +428,6 @@ function addNewHabit() {
   updateAll();
 }
 
-// Fullscreen Landscape
 async function forceLandscape() {
   try {
     if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen().catch(()=>{});
@@ -408,7 +437,6 @@ async function forceLandscape() {
 }
 window.addEventListener('load', forceLandscape);
 
-// Service Worker
 async function initServiceWorker() {
   if ('serviceWorker' in navigator) {
     try {
@@ -431,7 +459,6 @@ async function initServiceWorker() {
 }
 initServiceWorker();
 
-// Notification
 async function enableLockscreenChecklist() {
   if (!('Notification' in window)) return alert('❌ Trình duyệt không hỗ trợ Thông báo!');
   const perm = await Notification.requestPermission();
@@ -474,7 +501,6 @@ function updateLockscreenNotification() {
   }
 }
 
-// Render Table
 function renderTable(){
   const days = daysInMonth(M);
   const today = new Date();
@@ -512,7 +538,6 @@ function renderTable(){
 
   document.getElementById('left-panel').innerHTML = h;
 
-  // Lắng nghe đổi tên nhiệm vụ
   document.querySelectorAll('.habit-input').forEach(el => {
     el.addEventListener('change', function(){
       const idx = this.dataset.idx;
@@ -524,7 +549,6 @@ function renderTable(){
     });
   });
 
-  // Lắng nghe Checkbox
   document.querySelectorAll('[data-k]').forEach(el => {
     el.addEventListener('change', function(){
       pushUndoState('Đánh dấu tích chọn');
@@ -534,7 +558,6 @@ function renderTable(){
   });
 }
 
-// Thống kê
 function computeStats(){
   const days = daysInMonth(M);
   const dailyPct = [];
@@ -577,14 +600,33 @@ function initCharts(){
 
   cD = new Chart(document.getElementById('cDaily'), {
     type:'bar',
-    data:{ labels: Array.from({length:s.days}, (_,i) => i+1), datasets:[{ data: s.dailyPct, backgroundColor: '#4a9e6e' }] },
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false} }, scales:{ y:{ min:0, max:100 } } }
+    data:{ labels: Array.from({length:s.days}, (_,i) => i+1), datasets:[{ data: s.dailyPct, backgroundColor: '#4a9e6e', borderRadius: 2 }] },
+    options:{ 
+      responsive:true, 
+      maintainAspectRatio:false, 
+      plugins:{ legend:{display:false} }, 
+      scales:{ 
+        x:{ 
+          ticks:{ maxRotation: 0, minRotation: 0, font:{ size:8 }, color:'#777' }, 
+          grid:{ display:false } 
+        }, 
+        y:{ min:0, max:100, ticks:{ font:{ size:9 }, color:'#777' }, grid:{ color:'#1f1f1f' } } 
+      } 
+    }
   });
 
   cW = new Chart(document.getElementById('cWeekly'), {
     type:'bar',
-    data:{ labels: s.weekLabels, datasets:[{ data: s.weeklyPct, backgroundColor: '#5e9fe8' }] },
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false} }, scales:{ y:{ min:0, max:100 } } }
+    data:{ labels: s.weekLabels, datasets:[{ data: s.weeklyPct, backgroundColor: '#5e9fe8', borderRadius: 3 }] },
+    options:{ 
+      responsive:true, 
+      maintainAspectRatio:false, 
+      plugins:{ legend:{display:false} }, 
+      scales:{ 
+        x:{ ticks:{ font:{ size:9 }, color:'#777' }, grid:{ display:false } }, 
+        y:{ min:0, max:100, ticks:{ font:{ size:9 }, color:'#777' }, grid:{ color:'#1f1f1f' } } 
+      } 
+    }
   });
 
   cDo = new Chart(document.getElementById('cDonut'), {
