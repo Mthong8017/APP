@@ -45,6 +45,9 @@ body {
 .btn-tool:hover { background:#333; color:#fff; }
 .btn-month-select { background:#1e2a38; color:#5e9fe8; border-color:#2c4361; font-weight:700; }
 .btn-month-select:hover { background:#283a50; color:#82b7f5; }
+.btn-undo { background:#3d2314; color:#f0a04b; border-color:#63391f; display:none; }
+.btn-undo.active { display:inline-block; }
+.btn-add { background:#1f3322; color:#52c472; border-color:#2e5434; }
 .btn-noti { background:#2a2a1e; color:#ffd700; border-color:#554d00; }
 .btn-demo { background:#1e3a29; color:#4af08c; border-color:#2a5a3c; }
 
@@ -61,14 +64,25 @@ body {
 /* Table Grid */
 .tracker-table { border-collapse:collapse; min-width:100%; table-layout:fixed; }
 .tracker-table th, .tracker-table td { border:1px solid #222; text-align:center; padding:0; }
-.th-month { background:#1a1a1a; color:#4a9e6e; font-weight:800; font-size:12px; padding:6px; width:180px; position:sticky; left:0; z-index:10; border-right:2px solid #333; }
+.th-month { background:#1a1a1a; color:#4a9e6e; font-weight:800; font-size:12px; padding:6px; width:220px; position:sticky; left:0; z-index:10; border-right:2px solid #333; }
 .th-day-name { background:#141414; color:#666; font-size:8px; font-weight:600; width:28px; height:20px; }
 .th-day-num { background:#111; color:#777; font-size:9px; width:28px; height:20px; }
 
-.habit-name { background:#161616; color:#ddd; font-size:11px; text-align:left; padding:2px 4px; position:sticky; left:0; z-index:4; border-right:2px solid #2e2e2e; height:32px; width:180px; }
-.habit-input { background:transparent; border:1px solid transparent; color:#ddd; font-size:10px; width:100%; outline:none; padding:1px 2px; }
+.habit-name {
+  background:#161616; color:#ddd; font-size:11px; text-align:left; padding:2px 4px;
+  position:sticky; left:0; z-index:4; border-right:2px solid #2e2e2e; height:36px; width:220px;
+  display:flex; align-items:center; gap:3px;
+}
+.habit-input { background:transparent; border:1px solid transparent; color:#ddd; font-size:10px; flex:1; outline:none; padding:1px 2px; }
+.habit-input:focus { border-color:#4a9e6e; background:#1e1e1e; border-radius:3px; }
 
-.cb-cell { width:28px; height:32px; padding:0; vertical-align:middle; }
+/* Nút sắp xếp & xóa trong ô nhiệm vụ */
+.btn-order { background:#252525; color:#888; border:none; border-radius:3px; width:16px; height:16px; font-size:9px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.btn-order:hover { background:#333; color:#fff; }
+.btn-del-task { background:transparent; color:#666; border:none; width:18px; height:18px; font-size:10px; cursor:pointer; border-radius:3px; }
+.btn-del-task:hover { color:#ff5555; background:#2a1818; }
+
+.cb-cell { width:28px; height:36px; padding:0; vertical-align:middle; }
 .cb-cell input[type=checkbox] { width:16px; height:16px; cursor:pointer; accent-color:#4a9e6e; margin:0 auto; display:block; }
 .cb-done { background:#0f2618 !important; }
 .cb-today { background:#12172b !important; outline:1px inset #3a5ccc; }
@@ -160,7 +174,9 @@ body {
   <div class="header-title">🎯 <span>2026</span> TRACKER</div>
   <div class="btn-group">
     <button class="btn-tool btn-month-select" id="curMonthBtn" onclick="openYearModal()">📅 Tháng 10 / 2026 ▾</button>
-    <button class="btn-tool btn-noti" onclick="enableLockscreenChecklist()">🔔 Màn Khóa & Thông Báo</button>
+    <button class="btn-tool btn-undo" id="undoBtn" onclick="undoLastAction()">↩️ Hoàn tác</button>
+    <button class="btn-tool btn-add" onclick="addNewHabit()">➕ Thêm Nhiệm Vụ</button>
+    <button class="btn-tool btn-noti" onclick="enableLockscreenChecklist()">🔔 Thông Báo Màn Khóa</button>
     <button class="btn-tool" onclick="toggleStats()"><span id="statsBtnTxt">📊 Thống Kê</span></button>
     <button class="btn-tool btn-demo" onclick="loadDemoData()">🎲 Demo</button>
   </div>
@@ -214,7 +230,6 @@ body {
 <script>
 const YEAR = 2026;
 const MONTHS = ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
-const MONTHS_ENG = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DAYS_SHORT = ['Su','Mo','Tu','We','Th','Fr','Sa'];
 
 const DEFAULT_HABITS = [
@@ -229,9 +244,10 @@ const DEFAULT_HABITS = [
 ];
 
 const SK = 'ht2026_dynamic_v3';
-let M = new Date().getFullYear() === YEAR ? new Date().getMonth() : 9; // Mặc định tháng hiện tại
+let M = new Date().getFullYear() === YEAR ? new Date().getMonth() : 9;
 let DATA = {};
 let HABITS = [];
+let undoStack = []; // Quản lý lịch sử để hoàn tác
 let swRegistration = null;
 
 try { 
@@ -244,6 +260,38 @@ function save(){
   DATA.last_saved_date = getTodayString();
   localStorage.setItem(SK, JSON.stringify(DATA)); 
   updateLockscreenNotification();
+  updateUndoButton();
+}
+
+function pushUndoState(description) {
+  undoStack.push({
+    habits: JSON.parse(JSON.stringify(HABITS)),
+    data: JSON.parse(JSON.stringify(DATA)),
+    desc: description
+  });
+  if (undoStack.length > 20) undoStack.shift(); // Giữ tối đa 20 bước hoàn tác
+  updateUndoButton();
+}
+
+function undoLastAction() {
+  if (undoStack.length === 0) return;
+  const lastState = undoStack.pop();
+  HABITS = lastState.habits;
+  DATA = lastState.data;
+  save();
+  renderTable();
+  updateAll();
+  updateUndoButton();
+}
+
+function updateUndoButton() {
+  const btn = document.getElementById('undoBtn');
+  if (undoStack.length > 0) {
+    btn.classList.add('active');
+    btn.title = `Hoàn tác: ${undoStack[undoStack.length - 1].desc}`;
+  } else {
+    btn.classList.remove('active');
+  }
 }
 
 function getTodayString(){
@@ -255,7 +303,7 @@ function daysInMonth(m){ return new Date(YEAR, m+1, 0).getDate(); }
 function dayDow(m,d){ return new Date(YEAR, m, d).getDay(); }
 function cbKey(m,d,hid){ return `${YEAR}-${m}-${d}-${hid}`; }
 
-// Tính phần trăm hoàn thành của bất kỳ tháng nào
+// Tính phần trăm hoàn thành của tháng
 function computeMonthPct(m) {
   const days = daysInMonth(m);
   const hLen = HABITS.length || 1;
@@ -270,7 +318,7 @@ function computeMonthPct(m) {
   return totalPossible > 0 ? Math.round((doneCount / totalPossible) * 100) : 0;
 }
 
-// Mở Bảng Tổng Quan Năm 2026
+// Bảng Tổng Quan Năm 2026
 function openYearModal() {
   const grid = document.getElementById('monthsGrid');
   grid.innerHTML = '';
@@ -312,6 +360,44 @@ function updateHeaderButton() {
   document.getElementById('curMonthBtn').textContent = `📅 ${MONTHS[M]} / 2026 ▾`;
 }
 
+// Quản lý Nhiệm vụ: Di chuyển & Xóa
+function moveHabit(idx, dir) {
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= HABITS.length) return;
+  
+  pushUndoState('Sắp xếp vị trí nhiệm vụ');
+  const temp = HABITS[idx];
+  HABITS[idx] = HABITS[newIdx];
+  HABITS[newIdx] = temp;
+  
+  save();
+  renderTable();
+}
+
+function deleteHabit(idx) {
+  if (!confirm(`Bạn có chắc muốn xóa nhiệm vụ "${HABITS[idx].name}"?`)) return;
+  
+  pushUndoState(`Xóa nhiệm vụ "${HABITS[idx].name}"`);
+  HABITS.splice(idx, 1);
+  
+  save();
+  renderTable();
+  updateAll();
+}
+
+function addNewHabit() {
+  const name = prompt('Nhập tên nhiệm vụ mới:');
+  if (!name || !name.trim()) return;
+
+  pushUndoState('Thêm nhiệm vụ mới');
+  const newId = 'h_' + Date.now();
+  HABITS.push({ id: newId, name: name.trim() });
+
+  save();
+  renderTable();
+  updateAll();
+}
+
 // Fullscreen Landscape
 async function forceLandscape() {
   try {
@@ -334,6 +420,7 @@ async function initServiceWorker() {
           if (today.getFullYear() === YEAR) {
             const m = today.getMonth();
             const d = today.getDate();
+            pushUndoState('Đánh dấu từ thông báo');
             DATA[cbKey(m, d, hid)] = true;
             save(); renderTable(); updateAll();
           }
@@ -403,8 +490,14 @@ function renderTable(){
   }
   h += '</tr></thead><tbody>';
 
-  HABITS.forEach(hb => {
-    h += `<tr><td class="habit-name"><input type="text" class="habit-input" value="${hb.name}" data-hid="${hb.id}"></td>`;
+  HABITS.forEach((hb, idx) => {
+    h += `<tr><td class="habit-name">
+      <button class="btn-order" onclick="moveHabit(${idx}, -1)" title="Lên">▲</button>
+      <button class="btn-order" onclick="moveHabit(${idx}, 1)" title="Xuống">▼</button>
+      <input type="text" class="habit-input" value="${hb.name}" data-idx="${idx}">
+      <button class="btn-del-task" onclick="deleteHabit(${idx})" title="Xóa nhiệm vụ">🗑️</button>
+    </td>`;
+
     for(let d=1; d<=days; d++){
       const key = cbKey(M,d,hb.id);
       const chk = DATA[key] ? 'checked' : '';
@@ -419,8 +512,22 @@ function renderTable(){
 
   document.getElementById('left-panel').innerHTML = h;
 
+  // Lắng nghe đổi tên nhiệm vụ
+  document.querySelectorAll('.habit-input').forEach(el => {
+    el.addEventListener('change', function(){
+      const idx = this.dataset.idx;
+      if (HABITS[idx] && HABITS[idx].name !== this.value) {
+        pushUndoState(`Đổi tên nhiệm vụ thành "${this.value}"`);
+        HABITS[idx].name = this.value;
+        save();
+      }
+    });
+  });
+
+  // Lắng nghe Checkbox
   document.querySelectorAll('[data-k]').forEach(el => {
     el.addEventListener('change', function(){
+      pushUndoState('Đánh dấu tích chọn');
       DATA[this.dataset.k] = this.checked;
       save(); updateAll();
     });
@@ -509,6 +616,7 @@ function updateAll(){
 
 function toggleStats(){ document.getElementById('right-panel').classList.toggle('panel-hidden'); }
 function loadDemoData(){
+  pushUndoState('Tải dữ liệu Demo');
   for(let d=1; d<=daysInMonth(M); d++){ HABITS.forEach(h => DATA[cbKey(M,d,h.id)] = Math.random() < 0.7); }
   save(); renderTable(); updateAll();
 }
@@ -516,6 +624,7 @@ function loadDemoData(){
 updateHeaderButton();
 renderTable();
 initCharts();
+updateUndoButton();
 </script>
 </body>
 </html>
