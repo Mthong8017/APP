@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>2026 Mobile Discipline & Lockscreen Tracker</title>
+<title>2026 Discipline Tracker</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0d0d0d">
@@ -12,148 +12,71 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
 body {
-  background:#0d0d0d;
-  color:#e1e1e1;
+  background:#0d0d0d; color:#e1e1e1;
   font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-  font-size:12px;
-  height:100dvh;
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
+  font-size:12px; height:100dvh; overflow:hidden; display:flex; flex-direction:column;
 }
 
-/* Landscape Lock Overlay for Mobile */
+/* Landscape Lock Overlay */
 #rotate-overlay {
-  display: none;
-  position: fixed;
-  top: 0; left: 0; width: 100vw; height: 100vh;
-  background: #000000;
-  z-index: 99999;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  color: #fff;
-  padding: 20px;
+  display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background: #000000; z-index: 99999; flex-direction: column;
+  justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px;
 }
 #rotate-overlay div { font-size: 40px; margin-bottom: 15px; animation: spin 2s infinite ease-in-out; }
 #rotate-overlay p { font-size: 14px; font-weight: 600; color: #4af08c; margin-bottom: 15px; }
-#rotate-btn {
-  background: #1e3a29; border: 1px solid #4af08c; color: #fff;
-  padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer;
-}
-
+#rotate-btn { background: #1e3a29; border: 1px solid #4af08c; color: #fff; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; }
 @keyframes spin { 0% { transform: rotate(0deg); } 50% { transform: rotate(90deg); } 100% { transform: rotate(0deg); } }
 
-/* CSS Portrait Check */
 @media screen and (max-width: 768px) and (orientation: portrait) {
   #rotate-overlay { display: flex !important; }
 }
 
 /* Header */
 .header {
-  background:#141414;
-  border-bottom:1px solid #282828;
-  padding:6px 12px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  flex-shrink:0;
-  gap:6px;
-  flex-wrap:wrap;
+  background:#141414; border-bottom:1px solid #282828; padding:6px 12px;
+  display:flex; align-items:center; justify-content:space-between; flex-shrink:0; gap:6px; flex-wrap:wrap;
 }
 .header-title { font-size:13px; font-weight:700; color:#fff; letter-spacing:0.5px; display:flex; align-items:center; gap:6px; }
 .header-title span { color:#4a9e6e; }
-.btn-group { display:flex; gap:4px; align-items:center; flex-wrap:wrap; }
-.btn-tool {
-  background:#222; color:#ccc; border:1px solid #333; padding:4px 8px;
-  font-size:10px; font-weight:600; border-radius:4px; cursor:pointer; 
-  transition:all 0.2s ease; touch-action: manipulation;
-}
-.btn-tool:hover, .btn-tool:active { background:#333; color:#fff; border-color:#555; }
+
+.btn-group { display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+.btn-tool { background:#222; color:#ccc; border:1px solid #333; padding:5px 10px; font-size:11px; font-weight:600; border-radius:5px; cursor:pointer; transition:all 0.2s; }
+.btn-tool:hover { background:#333; color:#fff; }
+.btn-month-select { background:#1e2a38; color:#5e9fe8; border-color:#2c4361; font-weight:700; }
+.btn-month-select:hover { background:#283a50; color:#82b7f5; }
 .btn-noti { background:#2a2a1e; color:#ffd700; border-color:#554d00; }
 .btn-demo { background:#1e3a29; color:#4af08c; border-color:#2a5a3c; }
-.btn-toggle-stats { background:#2a2a38; color:#77a0ff; border-color:#3b3b54; }
-
-/* Month Tabs */
-.month-tabs {
-  display:flex; background:#111; border-bottom:1px solid #222;
-  overflow-x:auto; padding:0 4px; flex-shrink:0; -webkit-overflow-scrolling: touch;
-}
-.month-tab {
-  padding:6px 12px; cursor:pointer; color:#777; font-size:11px; font-weight:700;
-  white-space:nowrap; border-bottom:2px solid transparent; transition:all 0.25s ease;
-}
-.month-tab.active { color:#fff; border-bottom:2px solid #4a9e6e; background:#181818; }
 
 /* Main Layout */
 .main-container { display:flex; flex:1; overflow:hidden; position:relative; }
-.left-panel { flex:1; overflow:auto; background:#0d0d0d; -webkit-overflow-scrolling: touch; }
+.left-panel { flex:1; overflow:auto; background:#0d0d0d; }
 
 .right-panel {
   width:320px; min-width:280px; background:#121212; border-left:1px solid #222;
-  overflow-y:auto; display:flex; flex-direction:column; -webkit-overflow-scrolling: touch;
-  transition: all 0.35s ease;
+  overflow-y:auto; display:flex; flex-direction:column; transition: all 0.35s ease;
 }
-.right-panel.panel-hidden {
-  opacity: 0 !important; max-width: 0 !important; min-width: 0 !important; width: 0 !important;
-  padding: 0 !important; border: none !important; overflow: hidden !important; pointer-events: none !important;
-}
+.right-panel.panel-hidden { opacity: 0 !important; width: 0 !important; min-width: 0 !important; padding: 0 !important; border: none !important; pointer-events: none !important; }
 
 /* Table Grid */
 .tracker-table { border-collapse:collapse; min-width:100%; table-layout:fixed; }
 .tracker-table th, .tracker-table td { border:1px solid #222; text-align:center; padding:0; }
+.th-month { background:#1a1a1a; color:#4a9e6e; font-weight:800; font-size:12px; padding:6px; width:180px; position:sticky; left:0; z-index:10; border-right:2px solid #333; }
+.th-day-name { background:#141414; color:#666; font-size:8px; font-weight:600; width:28px; height:20px; }
+.th-day-num { background:#111; color:#777; font-size:9px; width:28px; height:20px; }
 
-.th-month {
-  background:#1a1a1a; color:#fff; font-weight:700; font-size:11px;
-  padding:4px 6px; width:180px; min-width:180px; position:sticky; left:0; z-index:10; border-right:2px solid #333;
-}
-.th-month-box { display:flex; align-items:center; justify-content:space-between; width:100%; }
-.btn-add-row {
-  background:#1e3a29; color:#4af08c; border:1px solid #2a5a3c;
-  padding:2px 6px; font-size:9px; border-radius:3px; cursor:pointer; font-weight:700;
-}
+.habit-name { background:#161616; color:#ddd; font-size:11px; text-align:left; padding:2px 4px; position:sticky; left:0; z-index:4; border-right:2px solid #2e2e2e; height:32px; width:180px; }
+.habit-input { background:transparent; border:1px solid transparent; color:#ddd; font-size:10px; width:100%; outline:none; padding:1px 2px; }
 
-.th-week { background:#161616; color:#888; font-size:9px; font-weight:700; padding:4px 2px; }
-.th-day-name { background:#141414; color:#666; font-size:8px; font-weight:600; width:28px; min-width:28px; height:20px; }
-.th-day-num { background:#111; color:#777; font-size:9px; width:28px; min-width:28px; height:20px; }
-
-.habit-name {
-  background:#161616; color:#ddd; font-size:11px; text-align:left;
-  padding:2px 4px; white-space:nowrap; position:sticky; left:0; z-index:4;
-  border-right:2px solid #2e2e2e; height:32px; width:180px; min-width:180px;
-}
-.habit-wrap { display:flex; align-items:center; justify-content:space-between; gap:2px; width:100%; height:100%; }
-.habit-input {
-  background:transparent; border:1px solid transparent; color:#ddd;
-  font-size:10px; width:100%; outline:none; padding:1px 2px; border-radius:2px;
-}
-.habit-input:focus { background:#222; border-color:#4a9e6e; color:#fff; }
-.btn-del-row { background:transparent; border:none; color:#777; cursor:pointer; font-size:11px; padding:0 4px; }
-.btn-del-row:hover { color:#f44336; }
-
-.cb-cell { width:28px; min-width:28px; height:32px; padding:0; vertical-align:middle; }
-.cb-cell input[type=checkbox] {
-  width:16px; height:16px; cursor:pointer; accent-color:#4a9e6e; margin:0 auto; display:block;
-}
+.cb-cell { width:28px; height:32px; padding:0; vertical-align:middle; }
+.cb-cell input[type=checkbox] { width:16px; height:16px; cursor:pointer; accent-color:#4a9e6e; margin:0 auto; display:block; }
 .cb-done { background:#0f2618 !important; }
 .cb-today { background:#12172b !important; outline:1px inset #3a5ccc; }
-.cb-wknd { background:#141414; }
-.th-wknd { color:#444 !important; background:#121212 !important; }
 
-.wellness-label {
-  background:#141414; color:#888; font-size:9px; text-align:left;
-  padding:3px 6px; position:sticky; left:0; z-index:4; border-right:2px solid #2e2e2e; height:26px; width:180px; min-width:180px;
-}
-.wellness-cell { height:26px; background:#0f0f0f; }
-.wellness-input { width:100%; height:100%; background:transparent; border:none; color:#aaa; font-size:10px; text-align:center; outline:none; }
-
-/* Right Panel Widgets */
+/* Widgets Right Panel */
 .rpanel { border-bottom:1px solid #222; padding:10px; }
 .rp-title { font-size:10px; font-weight:700; color:#aaa; text-align:center; background:#1a1a1a; padding:4px; border-radius:3px; margin-bottom:8px; border:1px solid #252525; }
-.chart-box { position:relative; height:110px; width:100%; }
-.chart-box-sm { position:relative; height:85px; width:100%; }
-
+.chart-box { position:relative; height:100px; width:100%; }
 .stats-wrap { display:flex; gap:10px; align-items:center; }
 .stats-col { flex:1; display:flex; flex-direction:column; gap:4px; }
 .stat-row { display:flex; justify-content:space-between; align-items:center; background:#181818; padding:4px 6px; border-radius:3px; border-left:3px solid #444; }
@@ -162,55 +85,104 @@ body {
 .stat-row.s-left { border-color:#de9255; }
 .stat-label { font-size:9px; color:#777; font-weight:600; }
 .stat-val { font-size:12px; font-weight:700; color:#fff; }
-
 .donut-wrap { position:relative; width:75px; height:75px; flex-shrink:0; }
 .donut-label { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:13px; font-weight:800; color:#fff; }
 
-.atbl { width:100%; border-collapse:collapse; font-size:9px; }
-.atbl th { background:#181818; color:#777; padding:4px 2px; font-size:8px; }
-.atbl td { padding:3px 2px; text-align:center; border-bottom:1px solid #1a1a1a; color:#ccc; }
-.mpbar { height:5px; background:#222; border-radius:3px; overflow:hidden; width:40px; margin:0 auto; }
-.mpfill { height:100%; border-radius:3px; }
+/* YEAR OVERVIEW MODAL (BẢNG NĂM 2026) */
+.modal-overlay {
+  display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(6px);
+  z-index: 10000; justify-content: center; align-items: center; padding: 15px;
+}
+.modal-overlay.active { display: flex; }
 
-.floating-toggle-btn {
-  position: fixed; bottom: 18px; right: 18px; width: 44px; height: 44px; border-radius: 50%;
-  background: rgba(30, 30, 42, 0.9); border: 1px solid rgba(119, 160, 255, 0.4); color: #77a0ff;
-  font-size: 18px; cursor: pointer; backdrop-filter: blur(10px); z-index: 9999;
+.year-box {
+  background: #141414; border: 1px solid #2e2e2e; border-radius: 12px;
+  width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto;
+  padding: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+  display: flex; flex-direction: column; gap: 14px;
+}
+.year-header {
+  display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 1px solid #222; padding-bottom: 10px;
+}
+.year-title { font-size: 15px; font-weight: 800; color: #fff; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
+.year-title span { color: #4a9e6e; }
+.close-btn { background: #222; border: 1px solid #444; color: #aaa; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-weight: bold; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+.close-btn:hover { background: #333; color: #fff; }
+
+.months-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+}
+@media (max-width: 550px) {
+  .months-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.month-card {
+  background: #1a1a1a; border: 1px solid #282828; border-radius: 10px;
+  padding: 12px 8px; display: flex; flex-direction: column; align-items: center;
+  gap: 8px; cursor: pointer; transition: all 0.2s ease;
+}
+.month-card:hover {
+  border-color: #4a9e6e; background: #222; transform: translateY(-2px);
+}
+.month-card.active {
+  border-color: #4a9e6e; background: #1b2920; box-shadow: 0 0 12px rgba(74, 158, 110, 0.3);
+}
+.month-card-name { font-size: 12px; font-weight: 700; color: #ddd; }
+
+/* Ring phần trăm bao quanh */
+.ring-container {
+  position: relative; width: 56px; height: 56px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
 }
+.ring-inner {
+  position: absolute; width: 44px; height: 44px; border-radius: 50%;
+  background: #1a1a1a; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #fff;
+}
+.month-card:hover .ring-inner { background: #222; }
+.month-card.active .ring-inner { background: #1b2920; }
+.ring-subtext { font-size: 8px; color: #888; font-weight: 600; margin-top: -2px; }
 </style>
 </head>
 <body>
 
-<!-- Mobile Landscape Overlay -->
+<!-- xoay màn hình -->
 <div id="rotate-overlay">
   <div>📱 ➔ 📲</div>
   <p>Vui lòng xoay ngang màn hình để có trải nghiệm tốt nhất!</p>
   <button id="rotate-btn" onclick="forceLandscape()">Xoay Ngang Ngay</button>
 </div>
 
+<!-- HEADER -->
 <div class="header">
   <div class="header-title">🎯 <span>2026</span> TRACKER</div>
   <div class="btn-group">
-    <button class="btn-tool btn-noti" onclick="enableLockscreenChecklist()">🔔 Màn Hình Khóa</button>
-    <button class="btn-tool btn-toggle-stats" onclick="toggleStats()"><span id="statsBtnTxt">📊 Thống Kê</span></button>
+    <button class="btn-tool btn-month-select" id="curMonthBtn" onclick="openYearModal()">📅 Tháng 10 / 2026 ▾</button>
+    <button class="btn-tool btn-noti" onclick="enableLockscreenChecklist()">🔔 Màn Khóa & Thông Báo</button>
+    <button class="btn-tool" onclick="toggleStats()"><span id="statsBtnTxt">📊 Thống Kê</span></button>
     <button class="btn-tool btn-demo" onclick="loadDemoData()">🎲 Demo</button>
-    <button class="btn-tool" onclick="exportData()">📥 Xuất JSON</button>
-    <span id="hdate" style="color:#666;font-size:9px;margin-left:4px"></span>
   </div>
 </div>
-
-<div class="month-tabs" id="mtabs"></div>
 
 <div class="main-container">
   <div class="left-panel" id="left-panel"></div>
   
   <div class="right-panel panel-hidden" id="right-panel">
+    <!-- 1. THỐNG KÊ NGÀY -->
     <div class="rpanel">
-      <div class="rp-title">📊 DAILY PROGRESS</div>
+      <div class="rp-title">📅 DAILY PROGRESS (%)</div>
       <div class="chart-box"><canvas id="cDaily"></canvas></div>
     </div>
-    
+
+    <!-- 2. THỐNG KÊ TUẦN -->
+    <div class="rpanel">
+      <div class="rp-title">📆 WEEKLY PROGRESS (%)</div>
+      <div class="chart-box"><canvas id="cWeekly"></canvas></div>
+    </div>
+
+    <!-- 3. THỐNG KÊ TỔNG QUAN -->
     <div class="rpanel">
       <div class="rp-title">🎯 OVERALL STATS</div>
       <div class="stats-wrap">
@@ -225,22 +197,24 @@ body {
         </div>
       </div>
     </div>
-    
-    <div class="rpanel">
-      <div class="rp-title">📋 ANALYSIS</div>
-      <table class="atbl">
-        <thead><tr><th style="text-align:left">Habit</th><th>Done</th><th>Progress</th><th>%</th></tr></thead>
-        <tbody id="aTbody"></tbody>
-      </table>
-    </div>
   </div>
 </div>
 
-<button id="floatingToggleBtn" class="floating-toggle-btn" onclick="toggleStats()">📊</button>
+<!-- BẢNG TỔNG QUAN NĂM 2026 (MODAL) -->
+<div class="modal-overlay" id="yearModal">
+  <div class="year-box">
+    <div class="year-header">
+      <div class="year-title">🗓️ BẢNG TỔNG QUAN <span>NĂM 2026</span></div>
+      <button class="close-btn" onclick="closeYearModal()">✕</button>
+    </div>
+    <div class="months-grid" id="monthsGrid"></div>
+  </div>
+</div>
 
 <script>
 const YEAR = 2026;
-const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MONTHS = ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
+const MONTHS_ENG = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DAYS_SHORT = ['Su','Mo','Tu','We','Th','Fr','Sa'];
 
 const DEFAULT_HABITS = [
@@ -255,7 +229,7 @@ const DEFAULT_HABITS = [
 ];
 
 const SK = 'ht2026_dynamic_v3';
-let M = new Date().getFullYear() === YEAR ? new Date().getMonth() : 9;
+let M = new Date().getFullYear() === YEAR ? new Date().getMonth() : 9; // Mặc định tháng hiện tại
 let DATA = {};
 let HABITS = [];
 let swRegistration = null;
@@ -263,16 +237,13 @@ let swRegistration = null;
 try { 
   DATA = JSON.parse(localStorage.getItem(SK) || '{}'); 
   HABITS = DATA.habits && DATA.habits.length > 0 ? DATA.habits : [...DEFAULT_HABITS];
-} catch(e){
-  HABITS = [...DEFAULT_HABITS];
-}
+} catch(e){ HABITS = [...DEFAULT_HABITS]; }
 
-// Hàm lưu dữ liệu tự động
 function save(){ 
   DATA.habits = HABITS;
   DATA.last_saved_date = getTodayString();
   localStorage.setItem(SK, JSON.stringify(DATA)); 
-  updateLockscreenNotification(); // Đồng bộ thông báo màn hình khóa
+  updateLockscreenNotification();
 }
 
 function getTodayString(){
@@ -281,93 +252,81 @@ function getTodayString(){
 }
 
 function daysInMonth(m){ return new Date(YEAR, m+1, 0).getDate(); }
-function firstDow(m){ return new Date(YEAR, m, 1).getDay(); }
 function dayDow(m,d){ return new Date(YEAR, m, d).getDay(); }
-function weekNum(m,d){ return Math.ceil((d + firstDow(m)) / 7); }
 function cbKey(m,d,hid){ return `${YEAR}-${m}-${d}-${hid}`; }
-function moodKey(m,d){ return `md-${YEAR}-${m}-${d}`; }
-function sleepKey(m,d){ return `sl-${YEAR}-${m}-${d}`; }
 
-// Render Month Tabs
-const mtabs = document.getElementById('mtabs');
-MONTHS.forEach((name,i)=>{
-  const t = document.createElement('div');
-  t.className = 'month-tab' + (i === M ? ' active' : '');
-  t.dataset.m = i;
-  t.textContent = name;
-  t.onclick = () => switchMonth(i);
-  mtabs.appendChild(t);
-});
+// Tính phần trăm hoàn thành của bất kỳ tháng nào
+function computeMonthPct(m) {
+  const days = daysInMonth(m);
+  const hLen = HABITS.length || 1;
+  const totalPossible = days * hLen;
+  let doneCount = 0;
 
-// Auto Landscape Locking
+  for(let d=1; d<=days; d++){
+    HABITS.forEach(h => {
+      if(DATA[cbKey(m, d, h.id)]) doneCount++;
+    });
+  }
+  return totalPossible > 0 ? Math.round((doneCount / totalPossible) * 100) : 0;
+}
+
+// Mở Bảng Tổng Quan Năm 2026
+function openYearModal() {
+  const grid = document.getElementById('monthsGrid');
+  grid.innerHTML = '';
+
+  MONTHS.forEach((name, i) => {
+    const pct = computeMonthPct(i);
+    const card = document.createElement('div');
+    card.className = 'month-card' + (i === M ? ' active' : '');
+    card.onclick = () => selectMonth(i);
+
+    card.innerHTML = `
+      <div class="month-card-name">${name}</div>
+      <div class="ring-container" style="background: conic-gradient(#4a9e6e ${pct}%, #2e2e2e 0deg);">
+        <div class="ring-inner">
+          ${pct}%
+          <span class="ring-subtext">XONG</span>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  document.getElementById('yearModal').classList.add('active');
+}
+
+function closeYearModal() {
+  document.getElementById('yearModal').classList.remove('active');
+}
+
+function selectMonth(m) {
+  M = m;
+  closeYearModal();
+  updateHeaderButton();
+  renderTable();
+  updateAll();
+}
+
+function updateHeaderButton() {
+  document.getElementById('curMonthBtn').textContent = `📅 ${MONTHS[M]} / 2026 ▾`;
+}
+
+// Fullscreen Landscape
 async function forceLandscape() {
   try {
-    if (document.documentElement.requestFullscreen) {
-      await document.documentElement.requestFullscreen().catch(()=>{});
-    }
-    if (screen.orientation && screen.orientation.lock) {
-      await screen.orientation.lock('landscape');
-    }
+    if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen().catch(()=>{});
+    if (screen.orientation && screen.orientation.lock) await screen.orientation.lock('landscape');
     document.getElementById('rotate-overlay').style.display = 'none';
-  } catch (err) {
-    console.log("Xoay ngang màn hình bằng CSS Overlay.");
-  }
+  } catch (err) {}
 }
-window.addEventListener('orientationchange', () => {
-  if (window.orientation === 90 || window.orientation === -90) {
-    document.getElementById('rotate-overlay').style.display = 'none';
-  }
-});
 window.addEventListener('load', forceLandscape);
 
-// -------------------------------------------------------------
-// MIDNIGHT RESET & AUTO ARCHIVE (LÀM MỚI 00:00 VÀ LƯU TIẾN TRÌNH)
-// -------------------------------------------------------------
-function checkMidnightReset() {
-  const todayStr = getTodayString();
-  if (DATA.last_saved_date && DATA.last_saved_date !== todayStr) {
-    // Đã bước sang ngày mới qua 00:00! Tiến trình ngày cũ đã tự động được lưu trong DATA
-    save();
-    renderTable();
-    updateAll();
-  }
-}
-setInterval(checkMidnightReset, 10000); // Kiểm tra mỗi 10 giây
-
-// -------------------------------------------------------------
-// SERVICE WORKER & LOCKSCREEN NOTIFICATION CHECKLIST
-// -------------------------------------------------------------
+// Service Worker
 async function initServiceWorker() {
   if ('serviceWorker' in navigator) {
-    // Inline Service Worker Code
-    const swCode = `
-      self.addEventListener('install', e => self.skipWaiting());
-      self.addEventListener('activate', e => self.clients.claim());
-
-      self.addEventListener('notificationclick', e => {
-        const action = e.action;
-        const notification = e.notification;
-        
-        if (action && action.startsWith('check_')) {
-          const hid = action.replace('check_', '');
-          e.waitUntil(
-            self.clients.matchAll({ type: 'window' }).then(clients => {
-              clients.forEach(client => {
-                client.postMessage({ type: 'TOGGLE_HABIT_FROM_NOTI', hid: hid });
-              });
-            })
-          );
-        }
-        notification.close();
-      });
-    `;
-    const blob = new Blob([swCode], { type: 'application/javascript' });
-    const swUrl = URL.createObjectURL(blob);
-    
     try {
-      swRegistration = await navigator.serviceWorker.register(swUrl);
-      
-      // Lắng nghe sự kiện từ Service Worker khi bấm trên Lockscreen Notification
+      swRegistration = await navigator.serviceWorker.register('sw.js');
       navigator.serviceWorker.addEventListener('message', event => {
         if (event.data && event.data.type === 'TOGGLE_HABIT_FROM_NOTI') {
           const hid = event.data.hid;
@@ -375,316 +334,186 @@ async function initServiceWorker() {
           if (today.getFullYear() === YEAR) {
             const m = today.getMonth();
             const d = today.getDate();
-            const key = cbKey(m, d, hid);
-            DATA[key] = true; // Đánh dấu hoàn thành
-            save();
-            renderTable();
-            updateAll();
+            DATA[cbKey(m, d, hid)] = true;
+            save(); renderTable(); updateAll();
           }
         }
       });
-    } catch (e) {
-      console.log('Service Worker setup error:', e);
-    }
+    } catch (e) {}
   }
 }
 initServiceWorker();
 
+// Notification
 async function enableLockscreenChecklist() {
-  if (!('Notification' in window)) {
-    alert('Trình duyệt không hỗ trợ Thông báo Màn hình khóa!');
-    return;
-  }
-  
+  if (!('Notification' in window)) return alert('❌ Trình duyệt không hỗ trợ Thông báo!');
   const perm = await Notification.requestPermission();
   if (perm === 'granted') {
-    alert('✅ Đã bật Danh sách Màn hình khóa! Các mục chưa tích sẽ hiện trên Màn hình khóa.');
+    alert('✅ ĐÃ KÍCH HOẠT THÔNG BÁO!');
     updateLockscreenNotification();
   } else {
-    alert('⚠️ Bạn cần cấp quyền Thông báo để tính năng này hoạt động!');
+    alert('❌ Bạn chưa cấp quyền thông báo.');
   }
 }
 
 function updateLockscreenNotification() {
-  if (Notification.permission !== 'granted' || !swRegistration) return;
-
+  if (Notification.permission !== 'granted') return;
   const today = new Date();
   if (today.getFullYear() !== YEAR) return;
 
   const m = today.getMonth();
   const d = today.getDate();
-
-  // Tìm các thói quen CHƯA HOÀN THÀNH của ngày hôm nay
   const uncompleted = HABITS.filter(h => !DATA[cbKey(m, d, h.id)]);
 
-  if (uncompleted.length === 0) {
-    swRegistration.showNotification('🎉 Hoàn thành xuất sắc!', {
-      body: 'Bạn đã tích xong tất cả thói quen cho hôm nay!',
-      icon: 'https://cdn-icons-png.flaticon.com/512/190/190411.png',
-      tag: 'daily-discipline-tracker',
-      renotify: true
-    });
-  } else {
-    // Tạo tối đa 2 nút bấm thao tác nhanh ngay trên Màn hình khóa (Hỗ trợ tốt nhất trên Android/iOS)
-    const actions = uncompleted.slice(0, 2).map(h => ({
-      action: `check_${h.id}`,
-      title: `✅ Tích: ${h.name.replace(/[\u{1F600}-\u{1F64F}]/gu, '')}`
-    }));
+  const title = uncompleted.length === 0 
+    ? '🎉 Hoàn thành xuất sắc!' 
+    : `🎯 Tiến trình Hôm nay (${HABITS.length - uncompleted.length}/${HABITS.length})`;
 
-    const bodyText = uncompleted.map(h => `• ${h.name}`).join('\n');
+  const bodyText = uncompleted.length === 0 
+    ? 'Bạn đã hoàn thành tất cả công việc!' 
+    : `Còn ${uncompleted.length} việc chưa làm:\n` + uncompleted.map(h => `• ${h.name}`).join('\n');
 
-    swRegistration.showNotification(`🎯 Tiến trình Hôm nay (${HABITS.length - uncompleted.length}/${HABITS.length})`, {
-      body: `Còn lại ${uncompleted.length} việc chưa hoàn thành:\n` + bodyText,
+  const actions = uncompleted.slice(0, 2).map(h => ({ action: `check_${h.id}`, title: `✅ ${h.name}` }));
+
+  if (swRegistration && swRegistration.active) {
+    swRegistration.showNotification(title, {
+      body: bodyText,
       icon: 'https://cdn-icons-png.flaticon.com/512/2683/2683274.png',
-      tag: 'daily-discipline-tracker',
+      tag: 'discipline-tracker-tag',
+      renotify: true,
       requireInteraction: true,
       actions: actions
     });
   }
 }
 
-// -------------------------------------------------------------
-// RENDER TABLE & LOGIC KHÁC
-// -------------------------------------------------------------
-function toggleStats(){
-  const rp = document.getElementById('right-panel');
-  const txt = document.getElementById('statsBtnTxt');
-  const isHidden = rp.classList.toggle('panel-hidden');
-  txt.textContent = isHidden ? '📊 Thống Kê' : '❌ Ẩn';
-  if(!isHidden){ setTimeout(() => { cD.resize(); cDo.resize(); }, 350); }
-}
-
-function addHabit(){
-  if(HABITS.length >= 12){ alert('Tối đa 12 hàng!'); return; }
-  HABITS.push({ id: 'h_' + Date.now(), name: `📌 Thói quen ${HABITS.length + 1}` });
-  save(); renderTable(); updateAll();
-}
-
-function deleteHabit(hid){
-  if(HABITS.length <= 1){ alert('Giữ ít nhất 1 hàng!'); return; }
-  HABITS = HABITS.filter(h => h.id !== hid);
-  Object.keys(DATA).forEach(k => { if(k.endsWith(hid)) delete DATA[k]; });
-  save(); renderTable(); updateAll();
-}
-
+// Render Table
 function renderTable(){
   const days = daysInMonth(M);
   const today = new Date();
   const isCurMon = (today.getFullYear() === YEAR && today.getMonth() === M);
   const todayD = today.getDate();
 
-  const wkGroups = {};
-  for(let d=1; d<=days; d++){
-    const wk = weekNum(M,d);
-    if(!wkGroups[wk]) wkGroups[wk] = [];
-    wkGroups[wk].push(d);
-  }
-  const wkNums = Object.keys(wkGroups).map(Number).sort((a,b)=>a-b);
-
-  let h = '<table class="tracker-table"><thead>';
-  const isMax = HABITS.length >= 12;
-  h += `<tr><th class="th-month" rowspan="3">
-    <div class="th-month-box">
-      <span>${MONTHS[M]} (${HABITS.length}/12)</span>
-      <button class="btn-add-row" onclick="addHabit()" ${isMax ? 'disabled' : ''}>➕ Thêm</button>
-    </div>
-  </th>`;
-  
-  wkNums.forEach(wk => { h += `<th class="th-week" colspan="${wkGroups[wk].length}">W${wk}</th>`; });
+  let h = '<table class="tracker-table"><thead><tr><th class="th-month">'+MONTHS[M].toUpperCase()+'</th>';
+  for(let d=1; d<=days; d++){ h += `<th class="th-day-name">${DAYS_SHORT[dayDow(M,d)]}</th>`; }
   h += '</tr><tr>';
-
   for(let d=1; d<=days; d++){
-    const dow = dayDow(M,d);
-    const wk = (dow===0 || dow===6) ? ' th-wknd' : '';
-    h += `<th class="th-day-name${wk}">${DAYS_SHORT[dow]}</th>`;
-  }
-  h += '</tr><tr>';
-
-  for(let d=1; d<=days; d++){
-    const dow = dayDow(M,d);
-    const wk = (dow===0 || dow===6) ? ' th-wknd' : '';
     const todayCls = (isCurMon && d === todayD) ? ' style="color:#7799ff;font-weight:800"' : '';
-    h += `<th class="th-day-num${wk}"${todayCls}>${d}</th>`;
+    h += `<th class="th-day-num"${todayCls}>${d}</th>`;
   }
   h += '</tr></thead><tbody>';
 
   HABITS.forEach(hb => {
-    h += `<tr><td class="habit-name">
-      <div class="habit-wrap">
-        <input type="text" class="habit-input" value="${hb.name}" data-hid="${hb.id}">
-        <button class="btn-del-row" onclick="deleteHabit('${hb.id}')">✕</button>
-      </div>
-    </td>`;
+    h += `<tr><td class="habit-name"><input type="text" class="habit-input" value="${hb.name}" data-hid="${hb.id}"></td>`;
     for(let d=1; d<=days; d++){
       const key = cbKey(M,d,hb.id);
       const chk = DATA[key] ? 'checked' : '';
-      const dow = dayDow(M,d);
-      const isWknd = (dow===0 || dow===6);
       const isToday = (isCurMon && d === todayD);
       const isDone = !!DATA[key];
-      let cls = 'cb-cell';
-      if(isToday) cls += ' cb-today';
-      else if(isDone) cls += ' cb-done';
-      else if(isWknd) cls += ' cb-wknd';
-      
+      let cls = 'cb-cell' + (isToday ? ' cb-today' : isDone ? ' cb-done' : '');
       h += `<td class="${cls}"><input type="checkbox" data-k="${key}" ${chk}></td>`;
     }
     h += '</tr>';
   });
-
-  // Mood row
-  h += '<tr><td class="wellness-label">😊 Mood (1-5)</td>';
-  for(let d=1; d<=days; d++){
-    const key = moodKey(M,d);
-    const v = DATA[key] != null ? DATA[key] : '';
-    h += `<td class="wellness-cell"><input class="wellness-input" type="number" min="1" max="5" value="${v}" data-wk="${key}"></td>`;
-  }
-  h += '</tr>';
-
-  // Sleep row
-  h += '<tr><td class="wellness-label">💤 Sleep (h)</td>';
-  for(let d=1; d<=days; d++){
-    const key = sleepKey(M,d);
-    const v = DATA[key] != null ? DATA[key] : '';
-    h += `<td class="wellness-cell"><input class="wellness-input" type="number" min="0" max="24" step="0.5" value="${v}" data-wk="${key}"></td>`;
-  }
-  h += '</tr></tbody></table>';
+  h += '</tbody></table>';
 
   document.getElementById('left-panel').innerHTML = h;
 
-  // Lắng nghe tích chọn & Tự động lưu thời gian thực
   document.querySelectorAll('[data-k]').forEach(el => {
     el.addEventListener('change', function(){
       DATA[this.dataset.k] = this.checked;
-      save(); // Tự động lưu + cập nhật Lockscreen Notification
-      const td = this.closest('td');
-      if(this.checked){ td.classList.add('cb-done'); td.classList.remove('cb-wknd'); }
-      else { td.classList.remove('cb-done'); if(td.classList.contains('cb-wknd')) td.classList.add('cb-wknd'); }
-      updateAll();
-    });
-  });
-
-  document.querySelectorAll('.habit-input').forEach(el => {
-    el.addEventListener('input', function(){
-      const hb = HABITS.find(h => h.id === this.dataset.hid);
-      if(hb){ hb.name = this.value || 'Thói quen mới'; save(); updateAnalysis(computeStats()); }
-    });
-  });
-
-  document.querySelectorAll('[data-wk]').forEach(el => {
-    el.addEventListener('change', function(){
-      DATA[this.dataset.wk] = this.value !== '' ? parseFloat(this.value) : null;
-      save();
+      save(); updateAll();
     });
   });
 }
 
+// Thống kê
 function computeStats(){
   const days = daysInMonth(M);
   const dailyPct = [];
   const hLen = HABITS.length || 1;
-  
+
   for(let d=1; d<=days; d++){
-    let done = 0, filled = false;
-    HABITS.forEach(h => { 
-      if(DATA[cbKey(M,d,h.id)] !== undefined) filled = true;
-      if(DATA[cbKey(M,d,h.id)]) done++; 
-    });
-    dailyPct.push(filled || done > 0 ? Math.round((done / hLen) * 100) : 0);
+    let done = 0;
+    HABITS.forEach(h => { if(DATA[cbKey(M,d,h.id)]) done++; });
+    dailyPct.push(Math.round((done / hLen) * 100));
   }
 
-  const habitStats = HABITS.map(h => {
-    let actual = 0;
-    for(let d=1; d<=days; d++){ if(DATA[cbKey(M,d,h.id)]) actual++; }
-    const goal = days;
-    return { name: h.name, goal, actual, left: Math.max(0, goal - actual), pct: Math.round((actual / goal) * 100) };
-  });
+  const weeklyPct = [];
+  const weekLabels = [];
+  let wDone = 0, wTotal = 0, wCount = 1;
+
+  for(let d=1; d<=days; d++){
+    HABITS.forEach(h => { 
+      wTotal++;
+      if(DATA[cbKey(M,d,h.id)]) wDone++; 
+    });
+
+    if(d % 7 === 0 || d === days) {
+      const pct = wTotal > 0 ? Math.round((wDone / wTotal) * 100) : 0;
+      weeklyPct.push(pct);
+      weekLabels.push(`W${wCount}`);
+      wCount++;
+      wDone = 0; wTotal = 0;
+    }
+  }
 
   const totalGoal = days * hLen;
-  const totalDone = habitStats.reduce((s,h) => s + h.actual, 0);
+  const totalDone = dailyPct.reduce((s, v) => s + Math.round((v * hLen)/100), 0);
 
-  return { dailyPct, habitStats, totalGoal, totalDone, days };
+  return { dailyPct, weeklyPct, weekLabels, totalGoal, totalDone, days };
 }
 
-Chart.defaults.color = '#666';
-Chart.defaults.borderColor = 'rgba(255,255,255,0.05)';
-let cD, cDo;
-
+let cD, cW, cDo;
 function initCharts(){
   const s = computeStats();
+
   cD = new Chart(document.getElementById('cDaily'), {
     type:'bar',
-    data:{ labels: Array.from({length:s.days}, (_,i) => i+1), datasets:[{ data: s.dailyPct, backgroundColor: s.dailyPct.map(v => v >= 80 ? '#4a9e6e' : v >= 50 ? '#de9255' : '#e97366'), borderRadius:2 }] },
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false} }, scales:{ x:{ ticks:{font:{size:7}, color:'#555'}, grid:{display:false} }, y:{ min:0, max:100, ticks:{font:{size:7}, color:'#555'}, grid:{color:'rgba(255,255,255,0.03)'} } } }
+    data:{ labels: Array.from({length:s.days}, (_,i) => i+1), datasets:[{ data: s.dailyPct, backgroundColor: '#4a9e6e' }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false} }, scales:{ y:{ min:0, max:100 } } }
   });
 
-  const pct = s.totalGoal > 0 ? Math.round((s.totalDone / s.totalGoal) * 100) : 0;
+  cW = new Chart(document.getElementById('cWeekly'), {
+    type:'bar',
+    data:{ labels: s.weekLabels, datasets:[{ data: s.weeklyPct, backgroundColor: '#5e9fe8' }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false} }, scales:{ y:{ min:0, max:100 } } }
+  });
+
   cDo = new Chart(document.getElementById('cDonut'), {
     type:'doughnut',
-    data:{ datasets:[{ data:[pct, 100-pct], backgroundColor:['#4a9e6e','#1e1e1e'], borderWidth:0 }] },
-    options:{ responsive:false, cutout:'70%', plugins:{ legend:{display:false}, tooltip:{enabled:false} } }
+    data:{ datasets:[{ data:[0, 100], backgroundColor:['#4a9e6e','#1e1e1e'], borderWidth:0 }] },
+    options:{ responsive:false, cutout:'70%', plugins:{ legend:{display:false} } }
   });
-
-  updateStatUI(s); updateAnalysis(s);
 }
 
 function updateAll(){
   const s = computeStats();
-  cD.data.datasets[0].data = s.dailyPct;
-  cD.data.datasets[0].backgroundColor = s.dailyPct.map(v => v >= 80 ? '#4a9e6e' : v >= 50 ? '#de9255' : '#e97366');
+  cD.data.labels = Array.from({length:s.days}, (_,i) => i+1);
+  cD.data.datasets[0].data = s.dailyPct; 
   cD.update();
-  const pct = s.totalGoal > 0 ? Math.round((s.totalDone / s.totalGoal) * 100) : 0;
-  cDo.data.datasets[0].data = [pct, 100-pct];
-  cDo.update();
-  updateStatUI(s); updateAnalysis(s);
-}
 
-function updateStatUI(s){
+  cW.data.labels = s.weekLabels;
+  cW.data.datasets[0].data = s.weeklyPct; 
+  cW.update();
+
+  const pct = s.totalGoal > 0 ? Math.round((s.totalDone / s.totalGoal) * 100) : 0;
+  cDo.data.datasets[0].data = [pct, 100-pct]; 
+  cDo.update();
+
   document.getElementById('sGoal').textContent = s.totalGoal;
   document.getElementById('sDone').textContent = s.totalDone;
   document.getElementById('sLeft').textContent = s.totalGoal - s.totalDone;
-  const pct = s.totalGoal > 0 ? Math.round((s.totalDone / s.totalGoal) * 100) : 0;
   document.getElementById('dPct').textContent = pct + '%';
 }
 
-function updateAnalysis(s){
-  document.getElementById('aTbody').innerHTML = s.habitStats.map(h => {
-    const bar = h.pct >= 80 ? '#4a9e6e' : h.pct >= 50 ? '#de9255' : '#e97366';
-    return `<tr>
-      <td style="text-align:left">${h.name}</td>
-      <td>${h.actual}</td>
-      <td><div class="mpbar"><div class="mpfill" style="width:${Math.min(h.pct,100)}%;background:${bar}"></div></div></td>
-      <td style="color:${bar};font-weight:bold">${h.pct}%</td>
-    </tr>`;
-  }).join('');
-}
-
-function switchMonth(m){
-  M = m;
-  document.querySelectorAll('.month-tab').forEach(t => t.classList.toggle('active', parseInt(t.dataset.m) === m));
-  renderTable(); updateAll();
-}
-
+function toggleStats(){ document.getElementById('right-panel').classList.toggle('panel-hidden'); }
 function loadDemoData(){
-  const days = daysInMonth(M);
-  HABITS.forEach((h, hIdx) => {
-    for(let d=1; d<=days; d++){ DATA[cbKey(M,d,h.id)] = Math.random() < (hIdx < 4 ? 0.85 : 0.70); }
-  });
+  for(let d=1; d<=daysInMonth(M); d++){ HABITS.forEach(h => DATA[cbKey(M,d,h.id)] = Math.random() < 0.7); }
   save(); renderTable(); updateAll();
 }
 
-function exportData(){
-  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(DATA, null, 2));
-  const dlAnchor = document.createElement('a');
-  dlAnchor.setAttribute("href", dataStr);
-  dlAnchor.setAttribute("download", `Personal_Discipline_2026.json`);
-  document.body.appendChild(dlAnchor);
-  dlAnchor.click();
-  dlAnchor.remove();
-}
-
-document.getElementById('hdate').textContent = new Date().toLocaleDateString('vi-VN', {weekday:'short', month:'short', day:'numeric', year:'numeric'});
-
+updateHeaderButton();
 renderTable();
 initCharts();
 </script>
