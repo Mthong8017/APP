@@ -1,24 +1,9 @@
 {
   "name": "2026 Discipline Tracker",
-  "short_name": "Tracker",
-  "description": "Ứng dụng quản lý thói quen và kỷ luật cá nhân 2026",
+  "short_name": "Tracker2026",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0d0d0d",
-  "theme_color": "#141414",
-  "orientation": "any",
-  "icons": [
-    {
-      "src": "https://cdn-icons-png.flaticon.com/512/3209/3209865.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "https://cdn-icons-png.flaticon.com/512/3209/3209865.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ]
+  "theme_color": "#0d0d0d",
+  "orientation": "landscape"
 }
